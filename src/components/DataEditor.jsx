@@ -6,13 +6,8 @@ function DataEditor() {
 
   const handleDataChange = (index, field, value) => {
     const newData = [...chartData];
-    // If value field, parse as float, else keep string
-    if (field === 'value') {
-      const num = parseFloat(value);
-      newData[index][field] = isNaN(num) ? value : num;
-    } else {
-       newData[index][field] = value;
-    }
+    newData[index] = { ...newData[index] };
+    newData[index][field] = value;
     setChartData(newData);
   };
 

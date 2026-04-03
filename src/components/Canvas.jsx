@@ -17,12 +17,17 @@ function Canvas() {
     return `${value}${settings.valueSuffix || ''}`;
   };
 
+  const processedData = chartData.map(item => ({
+    ...item,
+    value: parseFloat(item.value) || 0
+  }));
+
   const renderChart = () => {
     if (settings.chartType === 'Bar') {
       return (
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
-            data={chartData}
+            data={processedData}
             margin={{ top: 30, right: 30, left: 20, bottom: 20 }}
           >
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eaeaea" />
@@ -65,7 +70,7 @@ function Canvas() {
     } else if (settings.chartType === 'Line') {
       return (
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData} margin={{ top: 30, right: 30, left: 20, bottom: 20 }}>
+          <LineChart data={processedData} margin={{ top: 30, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eaeaea" />
             {settings.showAxisLabels && (
               <XAxis dataKey="label" axisLine={true} tickLine={false} tick={{ fill: '#666', fontSize: 12 }} dy={10} />
@@ -86,7 +91,7 @@ function Canvas() {
     } else if (settings.chartType === 'Area') {
       return (
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={chartData} margin={{ top: 30, right: 30, left: 20, bottom: 20 }}>
+          <AreaChart data={processedData} margin={{ top: 30, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eaeaea" />
             {settings.showAxisLabels && (
               <XAxis dataKey="label" axisLine={true} tickLine={false} tick={{ fill: '#666', fontSize: 12 }} dy={10} />
@@ -111,7 +116,7 @@ function Canvas() {
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
-              data={chartData}
+              data={processedData}
               cx="50%"
               cy="50%"
               innerRadius={isDoughnut ? 80 : 0}
@@ -122,7 +127,7 @@ function Canvas() {
               nameKey="label"
               label={settings.showDataLabels ? ({ name, value }) => `${name} (${value}${settings.valueSuffix || ''})` : false}
             >
-              {chartData.map((entry, index) => (
+              {processedData.map((entry, index) => (
                  <Cell key={`cell-${index}`} fill={pieColors[index % pieColors.length]} />
               ))}
             </Pie>
