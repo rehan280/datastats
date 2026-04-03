@@ -12,9 +12,11 @@ import { Users } from 'lucide-react';
 function Canvas() {
   const { chartData, settings } = useContext(AppContext);
 
-  // Customize tooltip and label formats
+  // Formatting utilities
   const formatYAxis = (tickItem) => {
-    return `${tickItem}${settings.valueSuffix || ''}`;
+    if (tickItem >= 1000000) return (tickItem / 1000000).toFixed(1) + 'M';
+    if (tickItem >= 1000) return (tickItem / 1000).toFixed(1) + 'k';
+    return tickItem;
   };
 
   const formatDataLabel = (value) => {
@@ -25,6 +27,13 @@ function Canvas() {
     ...item,
     value: parseFloat(item.value) || 0
   }));
+
+  const getCellOpacity = (index) => {
+    const total = processedData.length;
+    if (total <= 1) return 1;
+    // Scale opacity from 1.0 down to 0.3 based on index
+    return 1 - (index * (0.7 / (total - 1)));
+  };
 
   const renderChart = () => {
     if (settings.chartType === 'Bar') {
@@ -132,10 +141,10 @@ function Canvas() {
               label={settings.showDataLabels ? ({ name, value }) => `${name} (${value}${settings.valueSuffix || ''})` : false}
             >
               {processedData.map((entry, index) => (
-                 <Cell key={`cell-${index}`} fill={pieColors[index % pieColors.length]} />
+                 <Cell key={`cell-${index}`} fill={settings.primaryColor} fillOpacity={getCellOpacity(index)} />
               ))}
             </Pie>
-            <Tooltip />
+            <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #ccc' }} />
             {settings.showLegend && <Legend />}
           </PieChart>
         </ResponsiveContainer>
@@ -188,22 +197,40 @@ function Canvas() {
     } else if (settings.chartType === 'RadialBar') {
       return (
         <ResponsiveContainer width="100%" height="100%">
-          <RadialBarChart cx="50%" cy="50%" innerRadius="20%" outerRadius="90%" barSize={15} data={processedData}>
-            <RadialBar minAngle={15} background clockWise dataKey="value" fill={settings.primaryColor}>
+          <RadialBarChart cx="50%" cy="50%" innerRadius="20%" outerRadius="90%" barSize={20} data={processedData}>
+            <RadialBar minAngle={15} background clockWise dataKey="value">
+              {processedData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={settings.primaryColor} fillOpacity={getCellOpacity(index)} />
+              ))}
               {settings.showDataLabels && <LabelList position="insideStart" fill="#fff" fontSize={10} />}
             </RadialBar>
             {settings.showLegend && <Legend iconSize={10} layout="vertical" verticalAlign="middle" wrapperStyle={{ right: '5%' }} />}
-            <Tooltip />
+            <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #ccc' }} />
           </RadialBarChart>
         </ResponsiveContainer>
       );
     } else if (settings.chartType === 'Treemap') {
       // Map data for Treemap requirement
-      const treeData = processedData.map(d => ({ name: d.label, size: d.value }));
+      const treeData = processedData.map((d, index) => ({ name: d.label, size: d.value, fillOpacity: getCellOpacity(index) }));
+      
+      const CustomizedContent = (props) => {
+        const { root, depth, x, y, width, height, index, payload, colors, rank, name } = props;
+        return (
+          <g>
+            <rect x={x} y={y} width={width} height={height} style={{ fill: settings.primaryColor, fillOpacity: payload.fillOpacity, stroke: '#fff', strokeWidth: 2 }} />
+            {width > 30 && height > 30 && (
+              <text x={x + width / 2} y={y + height / 2} textAnchor="middle" fill="#fff" fontSize={12} dominantBaseline="central">
+                {name}
+              </text>
+            )}
+          </g>
+        );
+      };
+
       return (
         <ResponsiveContainer width="100%" height="100%">
-          <Treemap width={736} height={350} data={treeData} dataKey="size" stroke="#fff" fill={settings.primaryColor}>
-             <Tooltip />
+          <Treemap width={736} height={350} data={treeData} dataKey="size" content={<CustomizedContent />}>
+             <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #ccc' }} />
           </Treemap>
         </ResponsiveContainer>
       );
@@ -224,11 +251,11 @@ function Canvas() {
       return (
         <ResponsiveContainer width="100%" height="100%">
           <FunnelChart margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
-            <Tooltip />
+            <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #ccc' }} />
             <Funnel dataKey="value" data={processedData} isAnimationActive>
               {settings.showDataLabels && <LabelList position="inside" fill="#fff" stroke="none" dataKey="label" fontSize={14} />}
               {processedData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={index === 0 ? settings.primaryColor : settings.secondaryColor} fillOpacity={1 - (index * 0.15)} />
+                <Cell key={`cell-${index}`} fill={settings.primaryColor} fillOpacity={getCellOpacity(index)} />
               ))}
             </Funnel>
           </FunnelChart>
