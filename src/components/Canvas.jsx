@@ -2,8 +2,10 @@ import React, { useContext } from 'react';
 import { AppContext } from '../App';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList,
-  PieChart, Pie, Cell, LineChart, Line, AreaChart, Area
+  PieChart, Pie, Cell, LineChart, Line, AreaChart, Area,
+  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar
 } from 'recharts';
+import { Users } from 'lucide-react';
 
 function Canvas() {
   const { chartData, settings } = useContext(AppContext);
@@ -59,7 +61,7 @@ function Canvas() {
             
             {settings.showLegend && <Legend wrapperStyle={{ paddingTop: '20px' }} />}
             
-            <Bar dataKey="value" fill={settings.primaryColor} radius={[4, 4, 0, 0]} maxBarSize={60}>
+            <Bar dataKey="value" fill={settings.primaryColor} radius={[settings.barRoundness, settings.barRoundness, 0, 0]} maxBarSize={60}>
               {settings.showDataLabels && (
                 <LabelList dataKey="value" position="top" fill="#666" fontSize={12} offset={10} formatter={formatDataLabel} />
               )}
@@ -136,12 +138,43 @@ function Canvas() {
           </PieChart>
         </ResponsiveContainer>
       );
+    } else if (settings.chartType === 'Radar') {
+      return (
+        <ResponsiveContainer width="100%" height="100%">
+          <RadarChart cx="50%" cy="50%" outerRadius="80%" data={processedData}>
+            <PolarGrid />
+            <PolarAngleAxis dataKey="label" tick={{ fill: '#666', fontSize: 12 }} />
+            <PolarRadiusAxis angle={30} domain={['auto', 'auto']} tick={false} />
+            <Radar name={settings.title || "Subject"} dataKey="value" stroke={settings.primaryColor} fill={settings.primaryColor} fillOpacity={0.6} />
+            <Tooltip />
+            {settings.showLegend && <Legend />}
+          </RadarChart>
+        </ResponsiveContainer>
+      );
+    } else if (settings.chartType === 'StatCard') {
+      const topValue = processedData.length > 0 ? processedData[0] : { label: 'Empty', value: 0 };
+      return (
+        <div className="stat-card-view">
+          <div className="stat-circle" style={{ background: settings.primaryColor }}>
+            <Users size={72} strokeWidth={1.5} />
+          </div>
+          <div className="stat-text">
+            <h2 style={{ color: settings.secondaryColor }}>
+              <span style={{ fontSize: '1.2rem', fontWeight: 500, color: '#6b7280', display: 'block', marginBottom: '8px' }}>
+                {topValue.label}
+              </span>
+              <span style={{ color: settings.primaryColor, display: 'inline' }}>{topValue.value}</span>
+              {settings.valueSuffix}
+            </h2>
+          </div>
+        </div>
+      );
     }
     return <div>Select a valid chart type</div>;
   };
 
   return (
-    <div id="canvas-export-area" className="canvas" style={{ background: '#ffffff' }}>
+    <div id="canvas-export-area" className={`canvas ${settings.canvasBackground === 'Gradient' ? 'bg-gradient' : ''}`}>
       
       {/* Container for content above footer */}
       <div className="canvas-body">

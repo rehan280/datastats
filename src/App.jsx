@@ -38,6 +38,8 @@ function App() {
     secondaryColor: '#1b1442', // Navy
     yAxisMin: 'auto',
     yAxisMax: 'auto',
+    barRoundness: 4,
+    canvasBackground: 'Solid',
   });
 
   const updateSetting = (key, value) => {

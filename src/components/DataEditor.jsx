@@ -21,10 +21,41 @@ function DataEditor() {
     setChartData(newData);
   };
 
+  const sortData = (direction) => {
+    const sorted = [...chartData].sort((a, b) => {
+      const valA = parseFloat(a.value) || 0;
+      const valB = parseFloat(b.value) || 0;
+      return direction === 'asc' ? valA - valB : valB - valA;
+    });
+    setChartData(sorted);
+  };
+
+  const importCSV = () => {
+    const input = window.prompt("Paste CSV data (Label,Value)\\nExample:\\nSales,120\\nMarketing,85");
+    if (!input) return;
+    
+    const lines = input.trim().split('\\n');
+    const newItems = lines.map(line => {
+      const [label, ...valParts] = line.split(',');
+      const valStr = valParts.join(',').trim();
+      return {
+        label: label ? label.trim() : 'Unknown',
+        value: valStr ? valStr : 0
+      };
+    });
+    
+    if (newItems.length > 0) {
+      setChartData(newItems);
+    }
+  };
+
   return (
     <div className="data-editor">
       <div className="table-toolbar">
-        <button className="btn" style={{ background: '#e0e0e0', color: '#333' }} onClick={addRow}>+ Add Row</button>
+        <button className="btn btn-secondary" onClick={addRow}>+ Add Row</button>
+        <button className="btn btn-secondary" onClick={importCSV}>Upload CSV</button>
+        <button className="btn btn-secondary" style={{ marginLeft: 'auto' }} onClick={() => sortData('asc')}>Sort Low-High</button>
+        <button className="btn btn-secondary" onClick={() => sortData('desc')}>Sort High-Low</button>
       </div>
       <div className="data-table-wrapper">
         <table className="data-table">

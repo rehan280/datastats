@@ -18,6 +18,8 @@ function Sidebar() {
             <option value="Area">Area Chart</option>
             <option value="Pie">Pie Chart</option>
             <option value="Doughnut">Doughnut Chart</option>
+            <option value="Radar">Radar (Spider) Chart</option>
+            <option value="StatCard">Stat / Value Card</option>
           </select>
         </div>
       </div>
@@ -97,15 +99,28 @@ function Sidebar() {
       </div>
 
       <div className="panel-section">
-        <h3>Colors</h3>
-        <div className="input-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '8px' }}>
-          <input type="color" value={settings.primaryColor} onChange={(e) => updateSetting('primaryColor', e.target.value)} style={{ padding: 0, width: '40px', height: '40px', border: 'none' }} />
+        <h3>Colors & Appearance</h3>
+        <div className="input-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '12px' }}>
+          <input type="color" value={settings.primaryColor} onChange={(e) => updateSetting('primaryColor', e.target.value)} style={{ padding: 0, width: '40px', height: '40px', border: 'none', borderRadius: '4px' }} />
           <label style={{ margin: 0 }}>Primary (Chart Color)</label>
         </div>
-        <div className="input-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '8px', marginTop: '12px' }}>
-          <input type="color" value={settings.secondaryColor} onChange={(e) => updateSetting('secondaryColor', e.target.value)} style={{ padding: 0, width: '40px', height: '40px', border: 'none' }} />
+        <div className="input-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '12px', marginTop: '12px' }}>
+          <input type="color" value={settings.secondaryColor} onChange={(e) => updateSetting('secondaryColor', e.target.value)} style={{ padding: 0, width: '40px', height: '40px', border: 'none', borderRadius: '4px' }} />
           <label style={{ margin: 0 }}>Secondary (Navy Footer)</label>
         </div>
+        <div className="input-group" style={{ marginTop: '16px' }}>
+          <label>Canvas Background</label>
+          <select value={settings.canvasBackground} onChange={(e) => updateSetting('canvasBackground', e.target.value)}>
+            <option value="Solid">Solid White</option>
+            <option value="Gradient">Premium Gradient</option>
+          </select>
+        </div>
+        {settings.chartType === 'Bar' && (
+          <div className="input-group">
+            <label>Bar Roundness ({settings.barRoundness}px)</label>
+            <input type="range" min="0" max="24" value={settings.barRoundness} onChange={(e) => updateSetting('barRoundness', Number(e.target.value))} />
+          </div>
+        )}
       </div>
     </div>
   );
