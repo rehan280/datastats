@@ -39,7 +39,9 @@ function App() {
     yAxisMin: 'auto',
     yAxisMax: 'auto',
     barRoundness: 4,
+    lineThickness: 3,
     canvasBackground: 'Solid',
+    showGridLines: true,
   });
 
   const updateSetting = (key, value) => {

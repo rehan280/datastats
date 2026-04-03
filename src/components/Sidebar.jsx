@@ -16,9 +16,15 @@ function Sidebar() {
             <option value="Bar">Column/Bar Chart</option>
             <option value="Line">Line Chart</option>
             <option value="Area">Area Chart</option>
-            <option value="Pie">Pie Chart</option>
+            <option value="Pie">Pie (Solid) Chart</option>
             <option value="Doughnut">Doughnut Chart</option>
             <option value="Radar">Radar (Spider) Chart</option>
+            <option value="RadialBar">Radial Bar Chart</option>
+            <option value="Treemap">Treemap Chart</option>
+            <option value="Scatter">Scatter Plot</option>
+            <option value="Combo">Combo (Bar+Line)</option>
+            <option value="Funnel">Funnel Chart</option>
+            <option value="Leaderboard">Leaderboard List</option>
             <option value="StatCard">Stat / Value Card</option>
           </select>
         </div>
@@ -44,6 +50,13 @@ function Sidebar() {
           <span>Data labels</span>
           <label className="switch">
             <input type="checkbox" checked={settings.showDataLabels} onChange={(e) => updateSetting('showDataLabels', e.target.checked)} />
+            <span className="slider"></span>
+          </label>
+        </div>
+        <div className="toggle-group">
+          <span>Grid lines</span>
+          <label className="switch">
+            <input type="checkbox" checked={settings.showGridLines} onChange={(e) => updateSetting('showGridLines', e.target.checked)} />
             <span className="slider"></span>
           </label>
         </div>
@@ -119,6 +132,12 @@ function Sidebar() {
           <div className="input-group">
             <label>Bar Roundness ({settings.barRoundness}px)</label>
             <input type="range" min="0" max="24" value={settings.barRoundness} onChange={(e) => updateSetting('barRoundness', Number(e.target.value))} />
+          </div>
+        )}
+        {(settings.chartType === 'Line' || settings.chartType === 'Area' || settings.chartType === 'Combo') && (
+          <div className="input-group">
+            <label>Line Thickness ({settings.lineThickness}px)</label>
+            <input type="range" min="1" max="10" value={settings.lineThickness} onChange={(e) => updateSetting('lineThickness', Number(e.target.value))} />
           </div>
         )}
       </div>
