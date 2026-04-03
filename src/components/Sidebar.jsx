@@ -121,10 +121,18 @@ function Sidebar() {
           <input type="color" value={settings.secondaryColor} onChange={(e) => updateSetting('secondaryColor', e.target.value)} style={{ padding: 0, width: '40px', height: '40px', border: 'none', borderRadius: '4px' }} />
           <label style={{ margin: 0 }}>Secondary (Navy Footer)</label>
         </div>
+        <div className="input-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '12px', marginTop: '12px' }}>
+          <input type="color" value={settings.canvasBgColor} onChange={(e) => updateSetting('canvasBgColor', e.target.value)} style={{ padding: 0, width: '40px', height: '40px', border: 'none', borderRadius: '4px' }} />
+          <label style={{ margin: 0 }}>Canvas Background</label>
+        </div>
+        <div className="input-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '12px', marginTop: '12px' }}>
+          <input type="color" value={settings.textColor} onChange={(e) => updateSetting('textColor', e.target.value)} style={{ padding: 0, width: '40px', height: '40px', border: 'none', borderRadius: '4px' }} />
+          <label style={{ margin: 0 }}>Chart Text & Grid</label>
+        </div>
         <div className="input-group" style={{ marginTop: '16px' }}>
-          <label>Canvas Background</label>
+          <label>Background Style</label>
           <select value={settings.canvasBackground} onChange={(e) => updateSetting('canvasBackground', e.target.value)}>
-            <option value="Solid">Solid White</option>
+            <option value="Solid">Solid Color</option>
             <option value="Gradient">Premium Gradient</option>
           </select>
         </div>

@@ -41,6 +41,8 @@ function App() {
     barRoundness: 4,
     lineThickness: 3,
     canvasBackground: 'Solid',
+    canvasBgColor: '#ffffff',
+    textColor: '#333333',
     showGridLines: true,
   });
 

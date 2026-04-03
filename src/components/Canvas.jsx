@@ -48,23 +48,20 @@ function Canvas() {
             {settings.showAxisLabels && (
               <XAxis 
                 dataKey="label" 
-                axisLine={true}
-                tickLine={false}
-                tick={{ fill: '#666', fontSize: 12 }} 
-                dy={10}
+                axisLine={false} 
+                tickLine={false} 
+                tick={{ fill: settings.textColor, fontSize: 12, fontWeight: 500 }} 
+                dy={10} 
               />
             )}
-            
             {settings.showAxisLabels && (
               <YAxis 
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: '#666', fontSize: 12 }}
-                tickFormatter={formatYAxis}
-                domain={['auto', 'auto']}
+                axisLine={false} 
+                tickLine={false} 
+                tick={{ fill: settings.textColor, fontSize: 12 }} 
+                tickFormatter={formatYAxis} 
               />
             )}
-            
             <Tooltip 
               cursor={{fill: 'transparent'}}
               contentStyle={{ borderRadius: '8px', border: '1px solid #ccc', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}
@@ -74,7 +71,7 @@ function Canvas() {
             
             <Bar dataKey="value" fill={settings.primaryColor} radius={[settings.barRoundness, settings.barRoundness, 0, 0]} maxBarSize={60}>
               {settings.showDataLabels && (
-                <LabelList dataKey="value" position="top" fill="#666" fontSize={12} offset={10} formatter={formatDataLabel} />
+                <LabelList dataKey="value" position="top" fill={settings.textColor} fontSize={12} offset={10} formatter={formatDataLabel} />
               )}
             </Bar>
           </BarChart>
@@ -86,16 +83,16 @@ function Canvas() {
           <LineChart data={processedData} margin={{ top: 30, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={settings.showGridLines ? "#eaeaea" : "transparent"} />
             {settings.showAxisLabels && (
-              <XAxis dataKey="label" axisLine={true} tickLine={false} tick={{ fill: '#666', fontSize: 12 }} dy={10} />
+              <XAxis dataKey="label" axisLine={true} tickLine={false} tick={{ fill: settings.textColor, fontSize: 12 }} dy={10} />
             )}
             {settings.showAxisLabels && (
-              <YAxis axisLine={false} tickLine={false} tick={{ fill: '#666', fontSize: 12 }} tickFormatter={formatYAxis} />
+              <YAxis axisLine={false} tickLine={false} tick={{ fill: settings.textColor, fontSize: 12 }} tickFormatter={formatYAxis} />
             )}
             <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #ccc', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
             {settings.showLegend && <Legend wrapperStyle={{ paddingTop: '20px' }} />}
             <Line type="monotone" dataKey="value" stroke={settings.primaryColor} strokeWidth={settings.lineThickness} dot={{ r: 5 }} activeDot={{ r: 8 }}>
               {settings.showDataLabels && (
-                <LabelList dataKey="value" position="top" fill="#666" fontSize={12} offset={10} formatter={formatDataLabel} />
+                <LabelList dataKey="value" position="top" fill={settings.textColor} fontSize={12} offset={10} formatter={formatDataLabel} />
               )}
             </Line>
           </LineChart>
@@ -107,16 +104,16 @@ function Canvas() {
           <AreaChart data={processedData} margin={{ top: 30, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={settings.showGridLines ? "#eaeaea" : "transparent"} />
             {settings.showAxisLabels && (
-              <XAxis dataKey="label" axisLine={true} tickLine={false} tick={{ fill: '#666', fontSize: 12 }} dy={10} />
+              <XAxis dataKey="label" axisLine={true} tickLine={false} tick={{ fill: settings.textColor, fontSize: 12 }} dy={10} />
             )}
             {settings.showAxisLabels && (
-              <YAxis axisLine={false} tickLine={false} tick={{ fill: '#666', fontSize: 12 }} tickFormatter={formatYAxis} />
+              <YAxis axisLine={false} tickLine={false} tick={{ fill: settings.textColor, fontSize: 12 }} tickFormatter={formatYAxis} />
             )}
             <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #ccc', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
             {settings.showLegend && <Legend wrapperStyle={{ paddingTop: '20px' }} />}
             <Area type="monotone" dataKey="value" stroke={settings.primaryColor} strokeWidth={settings.lineThickness} fill={settings.primaryColor} fillOpacity={0.3}>
               {settings.showDataLabels && (
-                <LabelList dataKey="value" position="top" fill="#666" fontSize={12} offset={10} formatter={formatDataLabel} />
+                <LabelList dataKey="value" position="top" fill={settings.textColor} fontSize={12} offset={10} formatter={formatDataLabel} />
               )}
             </Area>
           </AreaChart>
@@ -154,7 +151,7 @@ function Canvas() {
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart cx="50%" cy="50%" outerRadius="80%" data={processedData}>
             <PolarGrid />
-            <PolarAngleAxis dataKey="label" tick={{ fill: '#666', fontSize: 12 }} />
+            <PolarAngleAxis dataKey="label" tick={{ fill: settings.textColor, fontSize: 12 }} />
             <PolarRadiusAxis angle={30} domain={['auto', 'auto']} tick={false} />
             <Radar name={settings.title || "Subject"} dataKey="value" stroke={settings.primaryColor} fill={settings.primaryColor} fillOpacity={0.6} />
             <Tooltip />
@@ -167,13 +164,13 @@ function Canvas() {
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={processedData} margin={{ top: 30, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={settings.showGridLines ? "#eaeaea" : "transparent"} />
-            {settings.showAxisLabels && <XAxis dataKey="label" tickLine={false} tick={{ fill: '#666', fontSize: 12 }} dy={10} />}
-            {settings.showAxisLabels && <YAxis tickLine={false} tick={{ fill: '#666', fontSize: 12 }} tickFormatter={formatYAxis} />}
+            {settings.showAxisLabels && <XAxis dataKey="label" tickLine={false} tick={{ fill: settings.textColor, fontSize: 12 }} dy={10} />}
+            {settings.showAxisLabels && <YAxis tickLine={false} tick={{ fill: settings.textColor, fontSize: 12 }} tickFormatter={formatYAxis} />}
             <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #ccc' }} />
             {settings.showLegend && <Legend wrapperStyle={{ paddingTop: '20px' }} />}
             <Bar dataKey="value" fill={settings.primaryColor} fillOpacity={0.4} radius={[settings.barRoundness, settings.barRoundness, 0, 0]} maxBarSize={60} />
             <Line type="monotone" dataKey="value" stroke={settings.secondaryColor} strokeWidth={settings.lineThickness} dot={{ r: 4 }} activeDot={{ r: 6 }}>
-              {settings.showDataLabels && <LabelList dataKey="value" position="top" fill="#666" fontSize={12} offset={10} formatter={formatDataLabel} />}
+              {settings.showDataLabels && <LabelList dataKey="value" position="top" fill={settings.textColor} fontSize={12} offset={10} formatter={formatDataLabel} />}
             </Line>
           </ComposedChart>
         </ResponsiveContainer>
@@ -183,13 +180,13 @@ function Canvas() {
         <ResponsiveContainer width="100%" height="100%">
           <ScatterChart margin={{ top: 30, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={settings.showGridLines ? "#eaeaea" : "transparent"} />
-            {settings.showAxisLabels && <XAxis dataKey="label" type="category" tickLine={false} tick={{ fill: '#666', fontSize: 12 }} dy={10} />}
-            {settings.showAxisLabels && <YAxis dataKey="value" type="number" tickLine={false} tick={{ fill: '#666', fontSize: 12 }} tickFormatter={formatYAxis} />}
+            {settings.showAxisLabels && <XAxis dataKey="label" type="category" tickLine={false} tick={{ fill: settings.textColor, fontSize: 12 }} dy={10} />}
+            {settings.showAxisLabels && <YAxis dataKey="value" type="number" tickLine={false} tick={{ fill: settings.textColor, fontSize: 12 }} tickFormatter={formatYAxis} />}
             <ZAxis type="number" range={[100, 100]} />
             <Tooltip cursor={{ strokeDasharray: '3 3' }} contentStyle={{ borderRadius: '8px', border: '1px solid #ccc' }} />
             {settings.showLegend && <Legend />}
             <Scatter name={settings.title || "Data"} data={processedData} fill={settings.primaryColor}>
-              {settings.showDataLabels && <LabelList dataKey="value" position="top" fill="#666" fontSize={12} offset={10} formatter={formatDataLabel} />}
+              {settings.showDataLabels && <LabelList dataKey="value" position="top" fill={settings.textColor} fontSize={12} offset={10} formatter={formatDataLabel} />}
             </Scatter>
           </ScatterChart>
         </ResponsiveContainer>
@@ -198,11 +195,11 @@ function Canvas() {
       return (
         <ResponsiveContainer width="100%" height="100%">
           <RadialBarChart cx="50%" cy="50%" innerRadius="20%" outerRadius="90%" barSize={20} data={processedData}>
-            <RadialBar minAngle={15} background clockWise dataKey="value">
+            <RadialBar minAngle={15} background={{ fill: settings.textColor, fillOpacity: 0.1 }} clockWise dataKey="value">
               {processedData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={settings.primaryColor} fillOpacity={getCellOpacity(index)} />
               ))}
-              {settings.showDataLabels && <LabelList position="insideStart" fill="#fff" fontSize={10} />}
+              {settings.showDataLabels && <LabelList position="insideStart" fill={settings.canvasBgColor} fontSize={10} />}
             </RadialBar>
             {settings.showLegend && <Legend iconSize={10} layout="vertical" verticalAlign="middle" wrapperStyle={{ right: '5%' }} />}
             <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #ccc' }} />
@@ -239,9 +236,9 @@ function Canvas() {
       return (
         <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', gap: '16px', padding: '10px 40px', overflowY: 'auto' }}>
           {topItems.map((item, index) => (
-            <div key={index} style={{ display: 'flex', alignItems: 'center', background: 'white', padding: '16px 24px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.06)' }}>
-              <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#ccc', width: '40px' }}>#{index + 1}</div>
-              <div style={{ flex: 1, fontSize: '1.1rem', fontWeight: 600, color: '#333' }}>{item.label}</div>
+            <div key={index} style={{ display: 'flex', alignItems: 'center', background: settings.canvasBgColor, border: `1px solid ${settings.textColor}22`, padding: '16px 24px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.06)' }}>
+              <div style={{ fontSize: '1.5rem', fontWeight: 800, color: settings.textColor, opacity: 0.3, width: '40px' }}>#{index + 1}</div>
+              <div style={{ flex: 1, fontSize: '1.1rem', fontWeight: 600, color: settings.textColor }}>{item.label}</div>
               <div style={{ fontSize: '1.3rem', fontWeight: 700, color: settings.primaryColor }}>{formatDataLabel(item.value)}</div>
             </div>
           ))}
@@ -270,7 +267,7 @@ function Canvas() {
           </div>
           <div className="stat-text">
             <h2 style={{ color: settings.secondaryColor }}>
-              <span style={{ fontSize: '1.2rem', fontWeight: 500, color: '#6b7280', display: 'block', marginBottom: '8px' }}>
+              <span style={{ fontSize: '1.2rem', fontWeight: 500, color: settings.textColor, opacity: 0.8, display: 'block', marginBottom: '8px' }}>
                 {topValue.label}
               </span>
               <span style={{ color: settings.primaryColor, display: 'inline' }}>{topValue.value}</span>
@@ -284,15 +281,18 @@ function Canvas() {
   };
 
   return (
-    <div id="canvas-export-area" className={`canvas ${settings.canvasBackground === 'Gradient' ? 'bg-gradient' : ''}`}>
+    <div id="canvas-export-area" className={`canvas ${settings.canvasBackground === 'Gradient' ? 'bg-gradient' : ''}`} style={settings.canvasBackground === 'Gradient' ? { background: `linear-gradient(135deg, ${settings.canvasBgColor} 0%, #ebedee 100%)` } : { background: settings.canvasBgColor }}>
       
       {/* Container for content above footer */}
-      <div className="canvas-body">
+      <div className="canvas-body" style={{ color: settings.textColor }}>
         
-        {/* Title / Subtitle */}
-        {settings.title && <div className="canvas-title">{settings.title}</div>}
-        {settings.subtitle && <div style={{ textAlign: 'center', color: '#666', marginBottom: '16px' }}>{settings.subtitle}</div>}
-
+        {settings.title && (
+          <h2 className="canvas-title" style={{ color: settings.textColor }}>{settings.title}</h2>
+        )}
+        {settings.subtitle && (
+          <p style={{ textAlign: 'center', color: settings.textColor, opacity: 0.8, marginBottom: '20px' }}>{settings.subtitle}</p>
+        )}
+        
         {/* The actual chart */}
         <div className="canvas-chart">
           {renderChart()}
