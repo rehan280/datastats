@@ -240,15 +240,14 @@ input:checked + .slider:before {
   background: white;
   border-radius: 12px;
   box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
-  width: 100%;
-  max-width: 800px;
-  height: auto;
-  aspect-ratio: 16 / 9;
+  width: 800px;
+  height: 450px;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 .canvas.bg-gradient {
@@ -388,7 +387,7 @@ table.data-table input:focus {
 /* Responsive Overrides */
 @media (max-width: 900px) {
   .app-container {
-    flex-direction: column-reverse;
+    flex-direction: column;
     height: auto;
     min-height: 100vh;
     overflow-y: auto;
@@ -396,10 +395,11 @@ table.data-table input:focus {
 
   .sidebar {
     width: 100%;
-    max-height: none;
+    height: 320px;
+    max-height: 320px;
     border-right: none;
-    border-top: 1px solid var(--border-color);
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    border-bottom: 2px solid var(--border-color);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
   }
 
   .main-area {
@@ -410,6 +410,14 @@ table.data-table input:focus {
 
   .canvas-wrapper {
     padding: 16px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+
+  .canvas {
+    width: 800px !important;
+    height: 450px !important;
   }
 
   .data-editor {
