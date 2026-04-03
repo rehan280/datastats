@@ -3,16 +3,22 @@ import html2canvas from 'html2canvas';
 
 function ExportButton() {
   const handleExport = async () => {
-    const canvasElement = document.getElementById('canvas-export-area');
-    if (!canvasElement) return;
+    const exportArea = document.getElementById('canvas-export-area');
+    if (!exportArea) return;
 
     try {
       // Small timeout to ensure everything is rendered
       setTimeout(async () => {
-        const canvas = await html2canvas(canvasElement, {
-          scale: 2, // High resolution
+        exportArea.style.transform = 'none';
+
+        const rect = exportArea.getBoundingClientRect();
+        const targetWidth = 800;
+        const dynamicScale = Math.max(2, (targetWidth / rect.width) * 2);
+
+        const canvas = await html2canvas(exportArea, {
+          scale: dynamicScale,
           useCORS: true,
-          backgroundColor: '#ffffff'
+          backgroundColor: null
         });
         
         const image = canvas.toDataURL('image/png', 1.0);
