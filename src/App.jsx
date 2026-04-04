@@ -27,8 +27,8 @@ function App() {
     xAxisTitle: '',
     yAxisTitle: '',
     footerText: 'Number Of LinkedIn Users',
-    brandLogoText: 'demand',
-    brandLogoHighlight: 'sage',
+    brandLogoText: 'TheRehan',
+    brandLogoHighlight: 'Kadri',
     valueSuffix: ' Million',
     watermarkText: '',
     showLegend: false,
@@ -44,7 +44,7 @@ function App() {
     canvasBgColor: '#FFFFFF',
     textColor: '#0B0B0D',
     showGridLines: true,
-    fontFamily: 'Inter',
+    fontFamily: 'The Rehan Kadri Display',
   });
 
   const updateSetting = (key, value) => {
@@ -77,7 +77,7 @@ function App() {
 
   return (
     <AppContext.Provider value={{ chartData, setChartData, settings, updateSetting }}>
-      <div className="app-container">
+      <div className="app-container" style={{ fontFamily: settings.fontFamily }}>
         {/* Left Sidebar */}
         <Sidebar />
 

@@ -105,7 +105,7 @@ function Sidebar() {
             <option value="Outfit">Outfit</option>
             <option value="Plus Jakarta Sans">Plus Jakarta Sans</option>
             <option value="IBM Plex Sans">IBM Plex Sans</option>
-            <option value="The Rehan Kadri">The Rehan Kadri</option>
+            <option value="The Rehan Kadri">The Rehan Kadri (Regular)</option>
             <option value="The Rehan Kadri Display">The Rehan Kadri Display</option>
           </select>
         </div>
