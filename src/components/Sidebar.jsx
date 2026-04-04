@@ -136,6 +136,17 @@ function Sidebar() {
             <option value="Gradient">Premium Gradient</option>
           </select>
         </div>
+        <div className="input-group" style={{ marginTop: '16px' }}>
+          <label>Font Family</label>
+          <select value={settings.fontFamily} onChange={(e) => updateSetting('fontFamily', e.target.value)} style={{ fontFamily: settings.fontFamily }}>
+            <option value="Inter" style={{ fontFamily: 'Inter' }}>Inter</option>
+            <option value="IBM Plex Sans" style={{ fontFamily: 'IBM Plex Sans' }}>IBM Plex Sans</option>
+            <option value="TheRehanKadri Regular" style={{ fontFamily: 'TheRehanKadri Regular' }}>TheRehanKadri Regular</option>
+            <option value="TheRehanKadri Bold" style={{ fontFamily: 'TheRehanKadri Bold' }}>TheRehanKadri Bold</option>
+            <option value="TheRehanKadri Condensed" style={{ fontFamily: 'TheRehanKadri Condensed' }}>TheRehanKadri Condensed</option>
+            <option value="TheRehanKadri Display" style={{ fontFamily: 'TheRehanKadri Display' }}>TheRehanKadri Display</option>
+          </select>
+        </div>
         {settings.chartType === 'Bar' && (
           <div className="input-group">
             <label>Bar Roundness ({settings.barRoundness}px)</label>

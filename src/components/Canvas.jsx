@@ -281,10 +281,10 @@ function Canvas() {
   };
 
   return (
-    <div id="canvas-export-area" className={`canvas ${settings.canvasBackground === 'Gradient' ? 'bg-gradient' : ''}`} style={settings.canvasBackground === 'Gradient' ? { background: `linear-gradient(135deg, ${settings.canvasBgColor} 0%, #ebedee 100%)` } : { background: settings.canvasBgColor }}>
+    <div id="canvas-export-area" className={`canvas ${settings.canvasBackground === 'Gradient' ? 'bg-gradient' : ''}`} style={settings.canvasBackground === 'Gradient' ? { background: `linear-gradient(135deg, ${settings.canvasBgColor} 0%, #ebedee 100%)`, fontFamily: settings.fontFamily } : { background: settings.canvasBgColor, fontFamily: settings.fontFamily }}>
       
       {/* Container for content above footer */}
-      <div className="canvas-body" style={{ color: settings.textColor }}>
+      <div className="canvas-body" style={{ color: settings.textColor, fontFamily: settings.fontFamily }}>
         
         {settings.title && (
           <h2 className="canvas-title" style={{ color: settings.textColor }}>{settings.title}</h2>
