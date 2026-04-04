@@ -98,6 +98,18 @@ function Sidebar() {
           <input type="text" placeholder="e.g. Number Of LinkedIn Users" value={settings.footerText} onChange={(e) => updateSetting('footerText', e.target.value)} />
         </div>
         <div className="input-group">
+          <label>Font Family</label>
+          <select value={settings.fontFamily || 'Inter'} onChange={(e) => updateSetting('fontFamily', e.target.value)}>
+            <option value="Inter">Inter (Default)</option>
+            <option value="Manrope">Manrope</option>
+            <option value="Outfit">Outfit</option>
+            <option value="Plus Jakarta Sans">Plus Jakarta Sans</option>
+            <option value="IBM Plex Sans">IBM Plex Sans</option>
+            <option value="The Rehan Kadri">The Rehan Kadri</option>
+            <option value="The Rehan Kadri Display">The Rehan Kadri Display</option>
+          </select>
+        </div>
+        <div className="input-group">
           <label>Brand Logo (White)</label>
           <input type="text" placeholder="e.g. demand" value={settings.brandLogoText} onChange={(e) => updateSetting('brandLogoText', e.target.value)} />
         </div>
@@ -134,17 +146,6 @@ function Sidebar() {
           <select value={settings.canvasBackground} onChange={(e) => updateSetting('canvasBackground', e.target.value)}>
             <option value="Solid">Solid Color</option>
             <option value="Gradient">Premium Gradient</option>
-          </select>
-        </div>
-        <div className="input-group" style={{ marginTop: '16px' }}>
-          <label>Font Family</label>
-          <select value={settings.fontFamily} onChange={(e) => updateSetting('fontFamily', e.target.value)} style={{ fontFamily: settings.fontFamily }}>
-            <option value="Inter" style={{ fontFamily: 'Inter' }}>Inter</option>
-            <option value="IBM Plex Sans" style={{ fontFamily: 'IBM Plex Sans' }}>IBM Plex Sans</option>
-            <option value="TheRehanKadri Regular" style={{ fontFamily: 'TheRehanKadri Regular' }}>TheRehanKadri Regular</option>
-            <option value="TheRehanKadri Bold" style={{ fontFamily: 'TheRehanKadri Bold' }}>TheRehanKadri Bold</option>
-            <option value="TheRehanKadri Condensed" style={{ fontFamily: 'TheRehanKadri Condensed' }}>TheRehanKadri Condensed</option>
-            <option value="TheRehanKadri Display" style={{ fontFamily: 'TheRehanKadri Display' }}>TheRehanKadri Display</option>
           </select>
         </div>
         {settings.chartType === 'Bar' && (

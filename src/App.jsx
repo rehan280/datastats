@@ -43,8 +43,8 @@ function App() {
     canvasBackground: 'Solid',
     canvasBgColor: '#ffffff',
     textColor: '#333333',
-    fontFamily: 'Inter',
     showGridLines: true,
+    fontFamily: 'Inter',
   });
 
   const updateSetting = (key, value) => {

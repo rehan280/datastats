@@ -1,58 +1,3 @@
-@font-face {
-  font-family: 'Inter';
-  src: url('./fonts/inter-regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Inter';
-  src: url('./fonts/inter-italic.woff2') format('woff2');
-  font-weight: 400;
-  font-style: italic;
-}
-@font-face {
-  font-family: 'Inter';
-  src: url('./fonts/inter-bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'IBM Plex Sans';
-  src: url('./fonts/ibm-plex-sans-regular.woff') format('woff');
-  font-weight: 400;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'IBM Plex Sans';
-  src: url('./fonts/ibm-plex-sans-italic.woff2') format('woff2');
-  font-weight: 400;
-  font-style: italic;
-}
-@font-face {
-  font-family: 'TheRehanKadri Regular';
-  src: url('./fonts/therehankadri_regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'TheRehanKadri Bold';
-  src: url('./fonts/therehankadri_bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'TheRehanKadri Condensed';
-  src: url('./fonts/therehankadri_condensedbold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'TheRehanKadri Display';
-  src: url('./fonts/therehankadri_display.woff2') format('woff2');
-  font-weight: 900;
-  font-style: normal;
-}
-
 :root {
   font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -69,6 +14,41 @@
   --border-color: #e5e7eb;
 }
 
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/inter-regular.woff2') format('woff2');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/inter-bold.woff2') format('woff2');
+  font-weight: 700;
+}
+@font-face {
+  font-family: 'Manrope';
+  src: url('./fonts/Manrope-Variable.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Outfit';
+  src: url('./fonts/Outfit-Variable.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('./fonts/PlusJakartaSans-Variable.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  src: url('./fonts/ibm-plex-sans-regular.woff') format('woff');
+}
+@font-face {
+  font-family: 'The Rehan Kadri';
+  src: url('./fonts/therehankadri_regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'The Rehan Kadri Display';
+  src: url('./fonts/therehankadri_display.woff2') format('woff2');
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -79,6 +59,10 @@ body {
   margin: 0;
   display: flex;
   min-height: 100vh;
+}
+
+text {
+  font-family: inherit !important;
 }
 
 #root {
@@ -285,8 +269,8 @@ input:checked + .slider:before {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
-  overflow: hidden;
+  padding: 40px;
+  overflow: auto;
   background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
   background-size: 20px 20px;
 }
@@ -465,12 +449,9 @@ table.data-table input:focus {
 
   .canvas-wrapper {
     padding: 16px;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    min-height: 280px;
-    height: auto;
-    width: 100%;
+    align-items: flex-start;
+    justify-content: flex-start;
+    overflow-x: auto;
   }
 
   .canvas {
