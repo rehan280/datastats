@@ -11,6 +11,34 @@ import { Users } from 'lucide-react';
 
 function Canvas() {
   const { chartData, settings } = useContext(AppContext);
+  const containerRef = useRef(null);
+  const [scale, setScale] = useState(1);
+
+  // Resize observer to dynamically scale the canvas to fit screen
+  useEffect(() => {
+    if (!containerRef.current || !containerRef.current.parentElement) return;
+    
+    // We observe the parent '.canvas-wrapper' size
+    const parent = containerRef.current.parentElement;
+    
+    const observer = new ResizeObserver((entries) => {
+      const { width, height } = entries[0].contentRect;
+      if (width <= 0 || height <= 0) return;
+      
+      const targetWidth = width - 16; // Slight padding
+      const targetHeight = height - 16;
+      
+      const scaleX = targetWidth / 800;
+      const scaleY = targetHeight / 450;
+      
+      const newScale = Math.min(scaleX, scaleY, 1);
+      setScale(newScale);
+    });
+
+    observer.observe(parent);
+    
+    return () => observer.disconnect();
+  }, []);
 
   // Formatting utilities
   const formatYAxis = (tickItem) => {
@@ -50,7 +78,7 @@ function Canvas() {
                 dataKey="label" 
                 axisLine={false} 
                 tickLine={false} 
-                tick={{ fill: settings.textColor, fontSize: 12, fontWeight: 500 }} 
+                tick={{ fontFamily: settings.fontFamily,  fill: settings.textColor, fontSize: 12, fontWeight: 500 }} 
                 dy={10} 
               />
             )}
@@ -58,13 +86,13 @@ function Canvas() {
               <YAxis 
                 axisLine={false} 
                 tickLine={false} 
-                tick={{ fill: settings.textColor, fontSize: 12 }} 
+                tick={{ fontFamily: settings.fontFamily,  fill: settings.textColor, fontSize: 12 }} 
                 tickFormatter={formatYAxis} 
               />
             )}
             <Tooltip 
               cursor={{fill: 'transparent'}}
-              contentStyle={{ borderRadius: '8px', border: '1px solid #ccc', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}
+              contentStyle={{ fontFamily: settings.fontFamily,  borderRadius: '8px', border: '1px solid #ccc', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}
             />
             
             {settings.showLegend && <Legend wrapperStyle={{ paddingTop: '20px' }} />}
@@ -83,12 +111,12 @@ function Canvas() {
           <LineChart data={processedData} margin={{ top: 30, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={settings.showGridLines ? "#eaeaea" : "transparent"} />
             {settings.showAxisLabels && (
-              <XAxis dataKey="label" axisLine={true} tickLine={false} tick={{ fill: settings.textColor, fontSize: 12 }} dy={10} />
+              <XAxis dataKey="label" axisLine={true} tickLine={false} tick={{ fontFamily: settings.fontFamily,  fill: settings.textColor, fontSize: 12 }} dy={10} />
             )}
             {settings.showAxisLabels && (
-              <YAxis axisLine={false} tickLine={false} tick={{ fill: settings.textColor, fontSize: 12 }} tickFormatter={formatYAxis} />
+              <YAxis axisLine={false} tickLine={false} tick={{ fontFamily: settings.fontFamily,  fill: settings.textColor, fontSize: 12 }} tickFormatter={formatYAxis} />
             )}
-            <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #ccc', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
+            <Tooltip contentStyle={{ fontFamily: settings.fontFamily,  borderRadius: '8px', border: '1px solid #ccc', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
             {settings.showLegend && <Legend wrapperStyle={{ paddingTop: '20px' }} />}
             <Line type="monotone" dataKey="value" stroke={settings.primaryColor} strokeWidth={settings.lineThickness} dot={{ r: 5 }} activeDot={{ r: 8 }}>
               {settings.showDataLabels && (
@@ -104,12 +132,12 @@ function Canvas() {
           <AreaChart data={processedData} margin={{ top: 30, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={settings.showGridLines ? "#eaeaea" : "transparent"} />
             {settings.showAxisLabels && (
-              <XAxis dataKey="label" axisLine={true} tickLine={false} tick={{ fill: settings.textColor, fontSize: 12 }} dy={10} />
+              <XAxis dataKey="label" axisLine={true} tickLine={false} tick={{ fontFamily: settings.fontFamily,  fill: settings.textColor, fontSize: 12 }} dy={10} />
             )}
             {settings.showAxisLabels && (
-              <YAxis axisLine={false} tickLine={false} tick={{ fill: settings.textColor, fontSize: 12 }} tickFormatter={formatYAxis} />
+              <YAxis axisLine={false} tickLine={false} tick={{ fontFamily: settings.fontFamily,  fill: settings.textColor, fontSize: 12 }} tickFormatter={formatYAxis} />
             )}
-            <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #ccc', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
+            <Tooltip contentStyle={{ fontFamily: settings.fontFamily,  borderRadius: '8px', border: '1px solid #ccc', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
             {settings.showLegend && <Legend wrapperStyle={{ paddingTop: '20px' }} />}
             <Area type="monotone" dataKey="value" stroke={settings.primaryColor} strokeWidth={settings.lineThickness} fill={settings.primaryColor} fillOpacity={0.3}>
               {settings.showDataLabels && (
@@ -141,7 +169,7 @@ function Canvas() {
                  <Cell key={`cell-${index}`} fill={settings.primaryColor} fillOpacity={getCellOpacity(index)} />
               ))}
             </Pie>
-            <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #ccc' }} />
+            <Tooltip contentStyle={{ fontFamily: settings.fontFamily,  borderRadius: '8px', border: '1px solid #ccc' }} />
             {settings.showLegend && <Legend />}
           </PieChart>
         </ResponsiveContainer>
@@ -151,7 +179,7 @@ function Canvas() {
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart cx="50%" cy="50%" outerRadius="80%" data={processedData}>
             <PolarGrid />
-            <PolarAngleAxis dataKey="label" tick={{ fill: settings.textColor, fontSize: 12 }} />
+            <PolarAngleAxis dataKey="label" tick={{ fontFamily: settings.fontFamily,  fill: settings.textColor, fontSize: 12 }} />
             <PolarRadiusAxis angle={30} domain={['auto', 'auto']} tick={false} />
             <Radar name={settings.title || "Subject"} dataKey="value" stroke={settings.primaryColor} fill={settings.primaryColor} fillOpacity={0.6} />
             <Tooltip />
@@ -164,9 +192,9 @@ function Canvas() {
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={processedData} margin={{ top: 30, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={settings.showGridLines ? "#eaeaea" : "transparent"} />
-            {settings.showAxisLabels && <XAxis dataKey="label" tickLine={false} tick={{ fill: settings.textColor, fontSize: 12 }} dy={10} />}
-            {settings.showAxisLabels && <YAxis tickLine={false} tick={{ fill: settings.textColor, fontSize: 12 }} tickFormatter={formatYAxis} />}
-            <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #ccc' }} />
+            {settings.showAxisLabels && <XAxis dataKey="label" tickLine={false} tick={{ fontFamily: settings.fontFamily,  fill: settings.textColor, fontSize: 12 }} dy={10} />}
+            {settings.showAxisLabels && <YAxis tickLine={false} tick={{ fontFamily: settings.fontFamily,  fill: settings.textColor, fontSize: 12 }} tickFormatter={formatYAxis} />}
+            <Tooltip contentStyle={{ fontFamily: settings.fontFamily,  borderRadius: '8px', border: '1px solid #ccc' }} />
             {settings.showLegend && <Legend wrapperStyle={{ paddingTop: '20px' }} />}
             <Bar dataKey="value" fill={settings.primaryColor} fillOpacity={0.4} radius={[settings.barRoundness, settings.barRoundness, 0, 0]} maxBarSize={60} />
             <Line type="monotone" dataKey="value" stroke={settings.secondaryColor} strokeWidth={settings.lineThickness} dot={{ r: 4 }} activeDot={{ r: 6 }}>
@@ -180,10 +208,10 @@ function Canvas() {
         <ResponsiveContainer width="100%" height="100%">
           <ScatterChart margin={{ top: 30, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={settings.showGridLines ? "#eaeaea" : "transparent"} />
-            {settings.showAxisLabels && <XAxis dataKey="label" type="category" tickLine={false} tick={{ fill: settings.textColor, fontSize: 12 }} dy={10} />}
-            {settings.showAxisLabels && <YAxis dataKey="value" type="number" tickLine={false} tick={{ fill: settings.textColor, fontSize: 12 }} tickFormatter={formatYAxis} />}
+            {settings.showAxisLabels && <XAxis dataKey="label" type="category" tickLine={false} tick={{ fontFamily: settings.fontFamily,  fill: settings.textColor, fontSize: 12 }} dy={10} />}
+            {settings.showAxisLabels && <YAxis dataKey="value" type="number" tickLine={false} tick={{ fontFamily: settings.fontFamily,  fill: settings.textColor, fontSize: 12 }} tickFormatter={formatYAxis} />}
             <ZAxis type="number" range={[100, 100]} />
-            <Tooltip cursor={{ strokeDasharray: '3 3' }} contentStyle={{ borderRadius: '8px', border: '1px solid #ccc' }} />
+            <Tooltip cursor={{ strokeDasharray: '3 3' }} contentStyle={{ fontFamily: settings.fontFamily,  borderRadius: '8px', border: '1px solid #ccc' }} />
             {settings.showLegend && <Legend />}
             <Scatter name={settings.title || "Data"} data={processedData} fill={settings.primaryColor}>
               {settings.showDataLabels && <LabelList dataKey="value" position="top" fill={settings.textColor} fontSize={12} offset={10} formatter={formatDataLabel} />}
@@ -202,7 +230,7 @@ function Canvas() {
               {settings.showDataLabels && <LabelList position="insideStart" fill={settings.canvasBgColor} fontSize={10} />}
             </RadialBar>
             {settings.showLegend && <Legend iconSize={10} layout="vertical" verticalAlign="middle" wrapperStyle={{ right: '5%' }} />}
-            <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #ccc' }} />
+            <Tooltip contentStyle={{ fontFamily: settings.fontFamily,  borderRadius: '8px', border: '1px solid #ccc' }} />
           </RadialBarChart>
         </ResponsiveContainer>
       );
@@ -227,7 +255,7 @@ function Canvas() {
       return (
         <ResponsiveContainer width="100%" height="100%">
           <Treemap width={736} height={350} data={treeData} dataKey="size" content={<CustomizedContent />}>
-             <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #ccc' }} />
+             <Tooltip contentStyle={{ fontFamily: settings.fontFamily,  borderRadius: '8px', border: '1px solid #ccc' }} />
           </Treemap>
         </ResponsiveContainer>
       );
@@ -248,7 +276,7 @@ function Canvas() {
       return (
         <ResponsiveContainer width="100%" height="100%">
           <FunnelChart margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
-            <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #ccc' }} />
+            <Tooltip contentStyle={{ fontFamily: settings.fontFamily,  borderRadius: '8px', border: '1px solid #ccc' }} />
             <Funnel dataKey="value" data={processedData} isAnimationActive>
               {settings.showDataLabels && <LabelList position="inside" fill="#fff" stroke="none" dataKey="label" fontSize={14} />}
               {processedData.map((entry, index) => (
@@ -281,39 +309,45 @@ function Canvas() {
   };
 
   return (
-    <div id="canvas-export-area" className={`canvas ${settings.canvasBackground === 'Gradient' ? 'bg-gradient' : ''}`} style={settings.canvasBackground === 'Gradient' ? { background: `linear-gradient(135deg, ${settings.canvasBgColor} 0%, #ebedee 100%)`, fontFamily: settings.fontFamily } : { background: settings.canvasBgColor, fontFamily: settings.fontFamily }}>
-      
-      {/* Container for content above footer */}
-      <div className="canvas-body" style={{ color: settings.textColor, fontFamily: settings.fontFamily }}>
-        
-        {settings.title && (
-          <h2 className="canvas-title" style={{ color: settings.textColor }}>{settings.title}</h2>
-        )}
-        {settings.subtitle && (
-          <p style={{ textAlign: 'center', color: settings.textColor, opacity: 0.8, marginBottom: '20px' }}>{settings.subtitle}</p>
-        )}
-        
-        {/* The actual chart */}
-        <div className="canvas-chart">
-          {renderChart()}
-          
-          {/* Watermark overlay */}
-          {settings.watermarkText && (
-            <div className="watermark">
-              {settings.watermarkText}
+    <div ref={containerRef} style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+      <div style={{ width: `${800 * scale}px`, height: `${450 * scale}px`, position: 'relative' }}>
+        <div id="canvas-scaler" style={{ transform: `scale(${scale})`, transformOrigin: 'top left', width: '800px', height: '450px' }}>
+          <div id="canvas-export-area" className={`canvas ${settings.canvasBackground === 'Gradient' ? 'bg-gradient' : ''}`} style={settings.canvasBackground === 'Gradient' ? { background: `linear-gradient(135deg, ${settings.canvasBgColor} 0%, #ebedee 100%)`, fontFamily: settings.fontFamily } : { background: settings.canvasBgColor, fontFamily: settings.fontFamily }}>
+            
+            {/* Container for content above footer */}
+            <div className="canvas-body" style={{ color: settings.textColor, fontFamily: settings.fontFamily }}>
+              
+              {settings.title && (
+                <h2 className="canvas-title" style={{ color: settings.textColor }}>{settings.title}</h2>
+              )}
+              {settings.subtitle && (
+                <p style={{ textAlign: 'center', color: settings.textColor, opacity: 0.8, marginBottom: '20px' }}>{settings.subtitle}</p>
+              )}
+              
+              {/* The actual chart */}
+              <div className="canvas-chart" style={{ fontFamily: settings.fontFamily }}>
+                {renderChart()}
+                
+                {/* Watermark overlay */}
+                {settings.watermarkText && (
+                  <div className="watermark" style={{ fontFamily: settings.fontFamily }}>
+                    {settings.watermarkText}
+                  </div>
+                )}
+              </div>
             </div>
-          )}
-        </div>
-      </div>
 
-      {/* Footer Area */}
-      <div className="canvas-footer" style={{ background: settings.secondaryColor }}>
-        <div style={{ color: 'white', fontWeight: 300, fontSize: '0.9rem' }}>
-          {settings.footerText}
-        </div>
-        <div className="brand-logo" style={{ color: 'white', fontWeight: 600, letterSpacing: '-0.5px', fontSize: '1.2rem' }}>
-          {settings.brandLogoText}
-          <span style={{ color: settings.primaryColor }}>{settings.brandLogoHighlight}</span>
+            {/* Footer Area */}
+            <div className="canvas-footer" style={{ background: settings.secondaryColor, fontFamily: settings.fontFamily }}>
+              <div style={{ color: 'white', fontWeight: 300, fontSize: '0.9rem' }}>
+                {settings.footerText}
+              </div>
+              <div className="brand-logo" style={{ color: 'white', fontWeight: 600, letterSpacing: '-0.5px', fontSize: '1.2rem' }}>
+                {settings.brandLogoText}
+                <span style={{ color: settings.primaryColor }}>{settings.brandLogoHighlight}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

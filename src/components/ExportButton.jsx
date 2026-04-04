@@ -9,7 +9,14 @@ function ExportButton() {
     try {
       // Small timeout to ensure everything is rendered
       setTimeout(async () => {
+        const scaler = document.getElementById('canvas-scaler');
+        const oldTransform = scaler ? scaler.style.transform : '';
+        if (scaler) scaler.style.transform = 'scale(1)';
+        
         exportArea.style.transform = 'none';
+
+        // Wait a frame for DOM to apply scale(1)
+        await new Promise(r => setTimeout(r, 20));
 
         const rect = exportArea.getBoundingClientRect();
         const targetWidth = 800;
@@ -18,8 +25,12 @@ function ExportButton() {
         const canvas = await html2canvas(exportArea, {
           scale: dynamicScale,
           useCORS: true,
-          backgroundColor: null
+          backgroundColor: null,
+          width: 800,
+          height: 450
         });
+
+        if (scaler) scaler.style.transform = oldTransform;
         
         const image = canvas.toDataURL('image/png', 1.0);
         const link = document.createElement('a');

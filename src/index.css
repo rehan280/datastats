@@ -285,8 +285,8 @@ input:checked + .slider:before {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px;
-  overflow: auto;
+  padding: 24px;
+  overflow: hidden;
   background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
   background-size: 20px 20px;
 }
@@ -465,9 +465,12 @@ table.data-table input:focus {
 
   .canvas-wrapper {
     padding: 16px;
-    align-items: flex-start;
-    justify-content: flex-start;
-    overflow-x: auto;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    min-height: 280px;
+    height: auto;
+    width: 100%;
   }
 
   .canvas {
