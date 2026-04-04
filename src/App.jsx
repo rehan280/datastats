@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import Sidebar from './components/Sidebar';
 import Canvas from './components/Canvas';
@@ -51,6 +51,30 @@ function App() {
     setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
+  const [scale, setScale] = useState(1);
+  const wrapperRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (wrapperRef.current) {
+        const availableWidth = wrapperRef.current.clientWidth - 40;
+        const availableHeight = wrapperRef.current.clientHeight - 40;
+        
+        const scaleW = availableWidth / 800;
+        const scaleH = availableHeight / 450;
+        
+        // Take the smallest scale to ensure it always fits entirely vertically and horizontally
+        const newScale = Math.max(Math.min(scaleW, scaleH, 1), 0.2);
+        setScale(newScale);
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    setTimeout(handleResize, 10);
+    
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <AppContext.Provider value={{ chartData, setChartData, settings, updateSetting }}>
       <div className="app-container">
@@ -65,8 +89,12 @@ function App() {
           </div>
           
           {/* Canvas Preview */}
-          <div className="canvas-wrapper">
-            <Canvas />
+          <div className="canvas-wrapper" ref={wrapperRef} style={{ display: 'flex' }}>
+            <div style={{ width: 800 * scale, height: 450 * scale, position: 'relative', margin: 'auto' }}>
+              <div style={{ transform: `scale(${scale})`, transformOrigin: 'top left', width: 800, height: 450 }}>
+                <Canvas />
+              </div>
+            </div>
           </div>
 
           {/* Data Editor Drawer */}

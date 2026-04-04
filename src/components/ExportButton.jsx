@@ -20,7 +20,7 @@ function ExportButton() {
           useCORS: true,
           backgroundColor: null
         });
-        
+
         const image = canvas.toDataURL('image/png', 1.0);
         const link = document.createElement('a');
         link.download = 'visualization.png';

@@ -14,41 +14,6 @@
   --border-color: #e5e7eb;
 }
 
-@font-face {
-  font-family: 'Inter';
-  src: url('./fonts/inter-regular.woff2') format('woff2');
-  font-weight: 400;
-}
-@font-face {
-  font-family: 'Inter';
-  src: url('./fonts/inter-bold.woff2') format('woff2');
-  font-weight: 700;
-}
-@font-face {
-  font-family: 'Manrope';
-  src: url('./fonts/Manrope-Variable.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Outfit';
-  src: url('./fonts/Outfit-Variable.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Plus Jakarta Sans';
-  src: url('./fonts/PlusJakartaSans-Variable.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'IBM Plex Sans';
-  src: url('./fonts/ibm-plex-sans-regular.woff') format('woff');
-}
-@font-face {
-  font-family: 'The Rehan Kadri';
-  src: url('./fonts/therehankadri_regular.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'The Rehan Kadri Display';
-  src: url('./fonts/therehankadri_display.woff2') format('woff2');
-}
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -59,10 +24,6 @@ body {
   margin: 0;
   display: flex;
   min-height: 100vh;
-}
-
-text {
-  font-family: inherit !important;
 }
 
 #root {
@@ -88,7 +49,7 @@ text {
   display: flex;
   flex-direction: column;
   z-index: 10;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.02);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.02);
 }
 
 .sidebar-header {
@@ -141,7 +102,8 @@ text {
   transition: all 0.2s ease;
 }
 
-.input-group input:focus, .input-group select:focus {
+.input-group input:focus,
+.input-group select:focus {
   border-color: var(--primary-teal);
   box-shadow: 0 0 0 3px rgba(92, 184, 178, 0.2);
 }
@@ -168,19 +130,25 @@ text {
   width: 36px;
   height: 20px;
 }
+
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
+
 .slider {
   position: absolute;
   cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: #d1d5db;
   transition: .3s;
   border-radius: 20px;
 }
+
 .slider:before {
   position: absolute;
   content: "";
@@ -191,12 +159,14 @@ text {
   background-color: white;
   transition: .3s;
   border-radius: 50%;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
-input:checked + .slider {
-  background-color: #8b5cf6; 
+
+input:checked+.slider {
+  background-color: #8b5cf6;
 }
-input:checked + .slider:before {
+
+input:checked+.slider:before {
   transform: translateX(16px);
 }
 
@@ -256,7 +226,7 @@ input:checked + .slider:before {
   background: white;
   color: #374151;
   border: 1px solid #d1d5db;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .btn-secondary:hover {
@@ -278,7 +248,7 @@ input:checked + .slider:before {
 .canvas {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
   width: 800px;
   height: 450px;
   display: flex;
@@ -344,7 +314,7 @@ input:checked + .slider:before {
   border-top: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
-  box-shadow: 0 -4px 10px rgba(0,0,0,0.02);
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.02);
   z-index: 10;
 }
 
@@ -368,7 +338,8 @@ table.data-table {
   text-align: left;
 }
 
-table.data-table th, table.data-table td {
+table.data-table th,
+table.data-table td {
   border-bottom: 1px solid #e5e7eb;
   padding: 10px 24px;
 }
@@ -385,7 +356,8 @@ table.data-table th {
   z-index: 5;
 }
 
-table.data-table td:first-child, table.data-table th:first-child {
+table.data-table td:first-child,
+table.data-table th:first-child {
   border-right: 1px solid #e5e7eb;
   background: #f9fafb;
   font-weight: 500;
@@ -414,7 +386,7 @@ table.data-table input:focus {
   left: 50%;
   transform: translate(-50%, -50%) rotate(-45deg);
   font-size: 5rem;
-  color: rgba(0,0,0,0.04);
+  color: rgba(0, 0, 0, 0.04);
   font-weight: 800;
   pointer-events: none;
   white-space: nowrap;
@@ -438,7 +410,7 @@ table.data-table input:focus {
     max-height: 320px;
     border-right: none;
     border-bottom: 2px solid var(--border-color);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   }
 
   .main-area {
