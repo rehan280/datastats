@@ -34,15 +34,15 @@ function App() {
     showLegend: false,
     showAxisLabels: true,
     showDataLabels: true,
-    primaryColor: '#6bcbc5', // Teal
-    secondaryColor: '#1b1442', // Navy
+    primaryColor: '#FF6A3D', // Orange
+    secondaryColor: '#0B0B0D', // Dark Text
     yAxisMin: 'auto',
     yAxisMax: 'auto',
     barRoundness: 4,
     lineThickness: 3,
     canvasBackground: 'Solid',
-    canvasBgColor: '#ffffff',
-    textColor: '#333333',
+    canvasBgColor: '#FFFFFF',
+    textColor: '#0B0B0D',
     showGridLines: true,
     fontFamily: 'Inter',
   });
