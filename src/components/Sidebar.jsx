@@ -4,33 +4,34 @@ import { AppContext } from '../App';
 function Sidebar() {
   const { settings, updateSetting } = useContext(AppContext);
 
+  const THEMES = {
+    'Default':             { primary: '#FF6A3D', secondary: '#0B0B0D', bg: '#FFFFFF', text: '#0B0B0D',  font: 'Inter' },
+    'Backlinko Minimal':   { primary: '#414DB0', secondary: '#45C5E6', bg: '#F8F9FA', text: '#111827',  font: 'Inter' },
+    'Corporate Blue':      { primary: '#2563EB', secondary: '#1E3A8A', bg: '#FFFFFF', text: '#0F172A',  font: 'Inter' },
+    'Modern Dark':         { primary: '#58A6FF', secondary: '#21262D', bg: '#0D1117', text: '#E6EDF3',  font: 'Inter' },
+    'Bloomberg Terminal':  { primary: '#F59E0B', secondary: '#1C1200', bg: '#0D0A00', text: '#FDE68A',  font: 'Courier New' },
+    'Startup Gradient':    { primary: '#A855F7', secondary: '#6D28D9', bg: '#6D28D9', text: '#FFFFFF',  font: 'Inter' },
+    'Neon Cyber':          { primary: '#00FF88', secondary: '#00CCFF', bg: '#050510', text: '#00FF88',  font: 'Courier New' },
+    'Magazine Editorial':  { primary: '#DC2626', secondary: '#7F1D1D', bg: '#FAFAF5', text: '#111111',  font: 'Georgia' },
+    'Warm Earth':          { primary: '#C0622F', secondary: '#92400E', bg: '#FAF7F0', text: '#3B2006',  font: 'Inter' },
+    'Apple Minimal':       { primary: '#007AFF', secondary: '#F5F5F7', bg: '#FFFFFF', text: '#1D1D1F',  font: 'Inter' },
+    'Infographic Pop':     { primary: '#FF6B6B', secondary: '#4ECDC4', bg: '#FFFFFF', text: '#2C3E50',  font: 'Inter' },
+    'Research Report':     { primary: '#374151', secondary: '#6B7280', bg: '#F4F4F8', text: '#111827',  font: 'Inter' },
+  };
+
   const applyTheme = (themeName) => {
     updateSetting('theme', themeName);
-    
-    if (themeName === 'Default') {
-      updateSetting('primaryColor', '#FF6A3D');
-      updateSetting('secondaryColor', '#0B0B0D');
-      updateSetting('canvasBgColor', '#FFFFFF');
-      updateSetting('textColor', '#0B0B0D');
-    } else if (themeName === 'Backlinko Minimal') {
-      updateSetting('primaryColor', '#414DB0');
-      updateSetting('secondaryColor', '#45C5E6');
-      updateSetting('canvasBgColor', '#F8F9FA');
-      updateSetting('textColor', '#111827');
+    const theme = THEMES[themeName];
+    if (theme) {
+      updateSetting('primaryColor', theme.primary);
+      updateSetting('secondaryColor', theme.secondary);
+      updateSetting('canvasBgColor', theme.bg);
+      updateSetting('textColor', theme.text);
+      updateSetting('fontFamily', theme.font);
       updateSetting('canvasBackground', 'Solid');
-      updateSetting('fontFamily', 'Inter');
-    } else if (themeName === 'Corporate Blue') {
-      updateSetting('primaryColor', '#1E3A8A');
-      updateSetting('secondaryColor', '#3B82F6');
-      updateSetting('canvasBgColor', '#FFFFFF');
-      updateSetting('textColor', '#1E40AF');
-    } else if (themeName === 'Modern Dark') {
-      updateSetting('primaryColor', '#10B981');
-      updateSetting('secondaryColor', '#374151');
-      updateSetting('canvasBgColor', '#111827');
-      updateSetting('textColor', '#F3F4F6');
     }
   };
+
 
   return (
     <div className="sidebar">
@@ -41,11 +42,19 @@ function Sidebar() {
         <div className="input-group">
           <label>Design Theme</label>
           <select value={settings.theme} onChange={(e) => applyTheme(e.target.value)}>
-            <option value="Custom">Custom</option>
+            <option value="Custom">— Custom —</option>
             <option value="Default">Default (Orange)</option>
-            <option value="Backlinko Minimal">Backlinko Minimal (Light)</option>
+            <option value="Backlinko Minimal">Backlinko Minimal</option>
             <option value="Corporate Blue">Corporate Blue</option>
             <option value="Modern Dark">Modern Dark</option>
+            <option value="Bloomberg Terminal">Bloomberg Terminal</option>
+            <option value="Startup Gradient">Startup Gradient</option>
+            <option value="Neon Cyber">Neon Cyber</option>
+            <option value="Magazine Editorial">Magazine Editorial</option>
+            <option value="Warm Earth">Warm Earth</option>
+            <option value="Apple Minimal">Apple Minimal</option>
+            <option value="Infographic Pop">Infographic Pop</option>
+            <option value="Research Report">Research Report</option>
           </select>
         </div>
         <div className="input-group">
