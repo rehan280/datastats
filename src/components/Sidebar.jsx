@@ -4,6 +4,34 @@ import { AppContext } from '../App';
 function Sidebar() {
   const { settings, updateSetting } = useContext(AppContext);
 
+  const applyTheme = (themeName) => {
+    updateSetting('theme', themeName);
+    
+    if (themeName === 'Default') {
+      updateSetting('primaryColor', '#FF6A3D');
+      updateSetting('secondaryColor', '#0B0B0D');
+      updateSetting('canvasBgColor', '#FFFFFF');
+      updateSetting('textColor', '#0B0B0D');
+    } else if (themeName === 'Backlinko Minimal') {
+      updateSetting('primaryColor', '#414DB0');
+      updateSetting('secondaryColor', '#45C5E6');
+      updateSetting('canvasBgColor', '#F8F9FA');
+      updateSetting('textColor', '#111827');
+      updateSetting('canvasBackground', 'Solid');
+      updateSetting('fontFamily', 'Inter');
+    } else if (themeName === 'Corporate Blue') {
+      updateSetting('primaryColor', '#1E3A8A');
+      updateSetting('secondaryColor', '#3B82F6');
+      updateSetting('canvasBgColor', '#FFFFFF');
+      updateSetting('textColor', '#1E40AF');
+    } else if (themeName === 'Modern Dark') {
+      updateSetting('primaryColor', '#10B981');
+      updateSetting('secondaryColor', '#374151');
+      updateSetting('canvasBgColor', '#111827');
+      updateSetting('textColor', '#F3F4F6');
+    }
+  };
+
   return (
     <div className="sidebar">
       <div className="sidebar-header">Chart Setup</div>
@@ -11,9 +39,20 @@ function Sidebar() {
       <div className="panel-section">
         <h3>Main Properties</h3>
         <div className="input-group">
+          <label>Design Theme</label>
+          <select value={settings.theme} onChange={(e) => applyTheme(e.target.value)}>
+            <option value="Custom">Custom</option>
+            <option value="Default">Default (Orange)</option>
+            <option value="Backlinko Minimal">Backlinko Minimal (Light)</option>
+            <option value="Corporate Blue">Corporate Blue</option>
+            <option value="Modern Dark">Modern Dark</option>
+          </select>
+        </div>
+        <div className="input-group">
           <label>Chart Type</label>
           <select value={settings.chartType} onChange={(e) => updateSetting('chartType', e.target.value)}>
             <option value="Bar">Column/Bar Chart</option>
+            <option value="Progress">Progress Bar</option>
             <option value="Line">Line Chart</option>
             <option value="Area">Area Chart</option>
             <option value="Pie">Pie (Solid) Chart</option>
@@ -98,18 +137,6 @@ function Sidebar() {
           <input type="text" placeholder="e.g. Number Of LinkedIn Users" value={settings.footerText} onChange={(e) => updateSetting('footerText', e.target.value)} />
         </div>
         <div className="input-group">
-          <label>Font Family</label>
-          <select value={settings.fontFamily || 'Inter'} onChange={(e) => updateSetting('fontFamily', e.target.value)}>
-            <option value="Inter">Inter (Default)</option>
-            <option value="Manrope">Manrope</option>
-            <option value="Outfit">Outfit</option>
-            <option value="Plus Jakarta Sans">Plus Jakarta Sans</option>
-            <option value="IBM Plex Sans">IBM Plex Sans</option>
-            <option value="The Rehan Kadri">The Rehan Kadri (Regular)</option>
-            <option value="The Rehan Kadri Display">The Rehan Kadri Display</option>
-          </select>
-        </div>
-        <div className="input-group">
           <label>Brand Logo (White)</label>
           <input type="text" placeholder="e.g. demand" value={settings.brandLogoText} onChange={(e) => updateSetting('brandLogoText', e.target.value)} />
         </div>
@@ -149,9 +176,27 @@ function Sidebar() {
           </select>
         </div>
         {settings.chartType === 'Bar' && (
-          <div className="input-group">
-            <label>Bar Roundness ({settings.barRoundness}px)</label>
-            <input type="range" min="0" max="24" value={settings.barRoundness} onChange={(e) => updateSetting('barRoundness', Number(e.target.value))} />
+          <>
+            <div className="input-group">
+              <label>Bar Roundness ({settings.barRoundness}px)</label>
+              <input type="range" min="0" max="24" value={settings.barRoundness} onChange={(e) => updateSetting('barRoundness', Number(e.target.value))} />
+            </div>
+            <div className="input-group">
+              <label>Bar Orientation</label>
+              <select value={settings.barLayout} onChange={(e) => updateSetting('barLayout', e.target.value)}>
+                <option value="vertical">Vertical (Column)</option>
+                <option value="horizontal">Horizontal (Bar)</option>
+              </select>
+            </div>
+          </>
+        )}
+        {(settings.chartType === 'Pie' || settings.chartType === 'Doughnut') && (
+          <div className="toggle-group" style={{ marginTop: '16px' }}>
+            <span>Show Center Text</span>
+            <label className="switch">
+              <input type="checkbox" checked={settings.showCenterText} onChange={(e) => updateSetting('showCenterText', e.target.checked)} />
+              <span className="slider"></span>
+            </label>
           </div>
         )}
         {(settings.chartType === 'Line' || settings.chartType === 'Area' || settings.chartType === 'Combo') && (

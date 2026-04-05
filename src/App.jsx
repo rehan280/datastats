@@ -44,7 +44,13 @@ function App() {
     canvasBgColor: '#FFFFFF',
     textColor: '#0B0B0D',
     showGridLines: true,
-    fontFamily: 'The Rehan Kadri Display',
+    fontFamily: 'Inter',
+    theme: 'Default',
+    barLayout: 'vertical',
+    showCenterText: false,
+    series1Name: 'Value 1',
+    series2Name: 'Value 2',
+    enableSecondarySeries: false,
   });
 
   const updateSetting = (key, value) => {
@@ -59,25 +65,25 @@ function App() {
       if (wrapperRef.current) {
         const availableWidth = wrapperRef.current.clientWidth - 40;
         const availableHeight = wrapperRef.current.clientHeight - 40;
-        
+
         const scaleW = availableWidth / 800;
         const scaleH = availableHeight / 450;
-        
+
         // Take the smallest scale to ensure it always fits entirely vertically and horizontally
         const newScale = Math.max(Math.min(scaleW, scaleH, 1), 0.2);
         setScale(newScale);
       }
     };
-    
+
     window.addEventListener('resize', handleResize);
     setTimeout(handleResize, 10);
-    
+
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return (
     <AppContext.Provider value={{ chartData, setChartData, settings, updateSetting }}>
-      <div className="app-container" style={{ fontFamily: settings.fontFamily }}>
+      <div className="app-container">
         {/* Left Sidebar */}
         <Sidebar />
 
@@ -87,7 +93,7 @@ function App() {
             <div style={{ fontWeight: 600 }}>Visualization Maker</div>
             <ExportButton />
           </div>
-          
+
           {/* Canvas Preview */}
           <div className="canvas-wrapper" ref={wrapperRef} style={{ display: 'flex' }}>
             <div style={{ width: 800 * scale, height: 450 * scale, position: 'relative', margin: 'auto' }}>

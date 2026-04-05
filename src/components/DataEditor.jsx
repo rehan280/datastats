@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { AppContext } from '../App';
 
 function DataEditor() {
-  const { chartData, setChartData } = useContext(AppContext);
+  const { chartData, setChartData, settings, updateSetting } = useContext(AppContext);
 
   const handleDataChange = (index, field, value) => {
     const newData = [...chartData];
@@ -12,7 +12,7 @@ function DataEditor() {
   };
 
   const addRow = () => {
-    setChartData([...chartData, { label: 'New Label', value: 0 }]);
+    setChartData([...chartData, { label: 'New Label', value: 0, value2: 0 }]);
   };
 
   const deleteRow = (index) => {
@@ -31,21 +31,25 @@ function DataEditor() {
   };
 
   const importCSV = () => {
-    const input = window.prompt("Paste CSV data (Label,Value)\\nExample:\\nSales,120\\nMarketing,85");
+    const input = window.prompt("Paste CSV data (Label,Value1,Value2)\\nExample:\\nSales,120,90\\nMarketing,85,60");
     if (!input) return;
     
     const lines = input.trim().split('\\n');
     const newItems = lines.map(line => {
-      const [label, ...valParts] = line.split(',');
-      const valStr = valParts.join(',').trim();
+      const [label, val1Str, val2Str] = line.split(',');
       return {
         label: label ? label.trim() : 'Unknown',
-        value: valStr ? valStr : 0
+        value: val1Str ? val1Str.trim() : 0,
+        value2: val2Str ? val2Str.trim() : null
       };
     });
     
     if (newItems.length > 0) {
       setChartData(newItems);
+      // Auto-enable secondary series if second value is found
+      if (newItems.some(item => item.value2 !== null && item.value2 !== undefined)) {
+        updateSetting('enableSecondarySeries', true);
+      }
     }
   };
 
@@ -54,6 +58,16 @@ function DataEditor() {
       <div className="table-toolbar">
         <button className="btn btn-secondary" onClick={addRow}>+ Add Row</button>
         <button className="btn btn-secondary" onClick={importCSV}>Upload CSV</button>
+        
+        <label style={{ marginLeft: '12px', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem', cursor: 'pointer' }}>
+          <input 
+            type="checkbox" 
+            checked={settings.enableSecondarySeries} 
+            onChange={(e) => updateSetting('enableSecondarySeries', e.target.checked)} 
+          />
+          Dual Series
+        </label>
+
         <button className="btn btn-secondary" style={{ marginLeft: 'auto' }} onClick={() => sortData('asc')}>Sort Low-High</button>
         <button className="btn btn-secondary" onClick={() => sortData('desc')}>Sort High-Low</button>
       </div>
@@ -63,7 +77,26 @@ function DataEditor() {
             <tr>
               <th style={{ width: '40px' }}>#</th>
               <th>Label (Text)</th>
-              <th>Value (Number)</th>
+              <th>
+                <input 
+                  type="text" 
+                  value={settings.series1Name} 
+                  onChange={(e) => updateSetting('series1Name', e.target.value)}
+                  style={{ fontWeight: 'bold', border: '1px solid transparent', background: 'transparent', padding: '2px 4px', width: '100%', fontSize: '0.8rem', color: 'inherit' }}
+                  title="Click to edit series name"
+                />
+              </th>
+              {settings.enableSecondarySeries && (
+                <th>
+                  <input 
+                    type="text" 
+                    value={settings.series2Name} 
+                    onChange={(e) => updateSetting('series2Name', e.target.value)}
+                    style={{ fontWeight: 'bold', border: '1px solid transparent', background: 'transparent', padding: '2px 4px', width: '100%', fontSize: '0.8rem', color: 'inherit' }}
+                    title="Click to edit series name"
+                  />
+                </th>
+              )}
               <th style={{ width: '60px', textAlign: 'center' }}>Actions</th>
             </tr>
           </thead>
@@ -85,6 +118,15 @@ function DataEditor() {
                     onChange={(e) => handleDataChange(index, 'value', e.target.value)}
                   />
                 </td>
+                {settings.enableSecondarySeries && (
+                  <td>
+                    <input
+                      type="number"
+                      value={row.value2 === undefined || row.value2 === '' ? '' : row.value2}
+                      onChange={(e) => handleDataChange(index, 'value2', e.target.value)}
+                    />
+                  </td>
+                )}
                 <td style={{ textAlign: 'center' }}>
                   <button
                     onClick={() => deleteRow(index)}
