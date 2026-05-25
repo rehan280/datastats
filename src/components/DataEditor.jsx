@@ -113,16 +113,16 @@ function DataEditor() {
                 </td>
                 <td>
                   <input
-                    type="number"
-                    value={row.value === '' ? '' : row.value}
+                    type="text"
+                    value={row.value === undefined ? '' : row.value}
                     onChange={(e) => handleDataChange(index, 'value', e.target.value)}
                   />
                 </td>
                 {settings.enableSecondarySeries && (
                   <td>
                     <input
-                      type="number"
-                      value={row.value2 === undefined || row.value2 === '' ? '' : row.value2}
+                      type="text"
+                      value={row.value2 === undefined ? '' : row.value2}
                       onChange={(e) => handleDataChange(index, 'value2', e.target.value)}
                     />
                   </td>

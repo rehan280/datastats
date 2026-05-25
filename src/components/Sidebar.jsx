@@ -1,8 +1,47 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { AppContext } from '../App';
 
 function Sidebar() {
   const { settings, updateSetting } = useContext(AppContext);
+  const [popover, setPopover] = useState(null);
+
+  const handleMouseUp = (e) => {
+    if (e.target.tagName === 'INPUT' && e.target.type === 'text') {
+      const settingKey = e.target.getAttribute('data-setting-key');
+      if (settingKey) {
+        const start = e.target.selectionStart;
+        const end = e.target.selectionEnd;
+        if (start !== end) {
+          const rect = e.target.getBoundingClientRect();
+          setPopover({
+            top: rect.top - 45,
+            left: rect.left + (rect.width / 2) - 60,
+            inputTarget: e.target,
+            start,
+            end,
+            settingKey
+          });
+          return;
+        }
+      }
+    }
+    
+    // Hide popover if clicking outside
+    if (!e.target.closest('.color-popover')) {
+      setPopover(null);
+    }
+  };
+
+  const applyColorTag = (color) => {
+    if (!popover) return;
+    const { inputTarget, start, end, settingKey } = popover;
+    const val = inputTarget.value;
+    const selectedText = val.substring(start, end);
+    
+    const newVal = val.substring(0, start) + `{{${color}|${selectedText}}}` + val.substring(end);
+    updateSetting(settingKey, newVal);
+    setPopover(null);
+  };
 
   const THEMES = {
     'Default':             { primary: '#FF6A3D', secondary: '#0B0B0D', bg: '#FFFFFF', text: '#0B0B0D',  font: 'Inter' },
@@ -34,7 +73,20 @@ function Sidebar() {
 
 
   return (
-    <div className="sidebar">
+    <div className="sidebar" onMouseUp={handleMouseUp}>
+      {popover && (
+        <div className="color-popover" style={{
+          position: 'fixed', top: popover.top, left: popover.left, zIndex: 9999,
+          background: '#fff', border: '1px solid #ccc', borderRadius: '6px',
+          padding: '6px', display: 'flex', gap: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+        }}>
+          {['#EF4444', '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#64748B', settings.primaryColor, settings.secondaryColor].map(c => (
+            <button key={c} onMouseDown={(e) => { e.preventDefault(); applyColorTag(c); }} style={{
+              width: '24px', height: '24px', borderRadius: '4px', background: c, border: '1px solid rgba(0,0,0,0.1)', cursor: 'pointer'
+            }} title={c} />
+          ))}
+        </div>
+      )}
       <div className="sidebar-header">Chart Setup</div>
 
       <div className="panel-section">
@@ -74,6 +126,7 @@ function Sidebar() {
             <option value="Funnel">Funnel Chart</option>
             <option value="Leaderboard">Leaderboard List</option>
             <option value="StatCard">Stat / Value Card</option>
+            <option value="Banner">Custom Banner</option>
           </select>
         </div>
       </div>
@@ -111,11 +164,11 @@ function Sidebar() {
 
         <div className="input-group" style={{ marginTop: '12px' }}>
           <label>Title</label>
-          <input type="text" placeholder="Add title" value={settings.title} onChange={(e) => updateSetting('title', e.target.value)} />
+          <input type="text" placeholder="Add title" data-setting-key="title" value={settings.title} onChange={(e) => updateSetting('title', e.target.value)} />
         </div>
         <div className="input-group">
           <label>Subtitle</label>
-          <input type="text" placeholder="Add subtitle" value={settings.subtitle} onChange={(e) => updateSetting('subtitle', e.target.value)} />
+          <input type="text" placeholder="Add subtitle" data-setting-key="subtitle" value={settings.subtitle} onChange={(e) => updateSetting('subtitle', e.target.value)} />
         </div>
       </div>
 
@@ -123,7 +176,7 @@ function Sidebar() {
         <h3>X Axis</h3>
         <div className="input-group">
           <label>X axis title</label>
-          <input type="text" placeholder="Add X axis title" value={settings.xAxisTitle} onChange={(e) => updateSetting('xAxisTitle', e.target.value)} />
+          <input type="text" placeholder="Add X axis title" data-setting-key="xAxisTitle" value={settings.xAxisTitle} onChange={(e) => updateSetting('xAxisTitle', e.target.value)} />
         </div>
       </div>
 
@@ -131,11 +184,11 @@ function Sidebar() {
         <h3>Y Axis</h3>
         <div className="input-group">
           <label>Y axis title</label>
-          <input type="text" placeholder="Add Y axis title" value={settings.yAxisTitle} onChange={(e) => updateSetting('yAxisTitle', e.target.value)} />
+          <input type="text" placeholder="Add Y axis title" data-setting-key="yAxisTitle" value={settings.yAxisTitle} onChange={(e) => updateSetting('yAxisTitle', e.target.value)} />
         </div>
         <div className="input-group">
           <label>Value Suffix (e.g. Million, %)</label>
-          <input type="text" placeholder="e.g. Million" value={settings.valueSuffix} onChange={(e) => updateSetting('valueSuffix', e.target.value)} />
+          <input type="text" placeholder="e.g. Million" data-setting-key="valueSuffix" value={settings.valueSuffix} onChange={(e) => updateSetting('valueSuffix', e.target.value)} />
         </div>
       </div>
 
@@ -143,7 +196,7 @@ function Sidebar() {
         <h3>Branding & Footer</h3>
         <div className="input-group">
           <label>Footer Text</label>
-          <input type="text" placeholder="e.g. Number Of LinkedIn Users" value={settings.footerText} onChange={(e) => updateSetting('footerText', e.target.value)} />
+          <input type="text" placeholder="e.g. Number Of LinkedIn Users" data-setting-key="footerText" value={settings.footerText} onChange={(e) => updateSetting('footerText', e.target.value)} />
         </div>
         <div className="input-group">
           <label>Brand Logo (White)</label>
@@ -157,6 +210,30 @@ function Sidebar() {
           <label>Watermark</label>
           <input type="text" placeholder="e.g. CONFIDENTIAL" value={settings.watermarkText} onChange={(e) => updateSetting('watermarkText', e.target.value)} />
         </div>
+        {settings.chartType === 'Banner' && (
+          <>
+            <div className="input-group">
+              <label>Custom Banner Logo URL</label>
+              <input type="text" placeholder="https://example.com/logo.png" value={settings.bannerLogoUrl || ''} onChange={(e) => updateSetting('bannerLogoUrl', e.target.value)} />
+            </div>
+            <div className="input-group">
+              <label>Custom Banner Graphic URL</label>
+              <input type="text" placeholder="https://example.com/graphic.png" value={settings.bannerImageUrl || ''} onChange={(e) => updateSetting('bannerImageUrl', e.target.value)} />
+            </div>
+          </>
+        )}
+        {settings.chartType === 'StatCard' && (
+          <>
+            <div className="input-group">
+              <label>Custom Stat Card Icon URL</label>
+              <input type="text" placeholder="https://example.com/icon.png" value={settings.statCardIconUrl || ''} onChange={(e) => updateSetting('statCardIconUrl', e.target.value)} />
+            </div>
+            <div className="input-group">
+              <label>Icon Zoom ({settings.statCardIconZoom || 100}%)</label>
+              <input type="range" min="10" max="300" value={settings.statCardIconZoom || 100} onChange={(e) => updateSetting('statCardIconZoom', Number(e.target.value))} />
+            </div>
+          </>
+        )}
       </div>
 
       <div className="panel-section">
@@ -182,6 +259,26 @@ function Sidebar() {
           <select value={settings.canvasBackground} onChange={(e) => updateSetting('canvasBackground', e.target.value)}>
             <option value="Solid">Solid Color</option>
             <option value="Gradient">Premium Gradient</option>
+          </select>
+        </div>
+        <div className="input-group" style={{ marginTop: '12px' }}>
+          <label>Font Family</label>
+          <select value={settings.fontFamily} onChange={(e) => updateSetting('fontFamily', e.target.value)}>
+            <optgroup label="The Rehan Kadri">
+              <option value="The Rehan Kadri Display">The Rehan Kadri Display</option>
+              <option value="The Rehan Kadri">The Rehan Kadri Regular</option>
+              <option value="The Rehan Kadri Condensed">The Rehan Kadri Condensed</option>
+            </optgroup>
+            <optgroup label="System Fonts">
+              <option value="Inter">Inter (Default)</option>
+              <option value="Georgia">Georgia (Serif)</option>
+              <option value="Courier New">Courier New (Mono)</option>
+              <option value="Arial">Arial</option>
+              <option value="Verdana">Verdana</option>
+              <option value="Times New Roman">Times New Roman</option>
+              <option value="Trebuchet MS">Trebuchet MS</option>
+              <option value="Impact">Impact</option>
+            </optgroup>
           </select>
         </div>
         {settings.chartType === 'Bar' && (

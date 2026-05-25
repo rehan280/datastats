@@ -37,8 +37,9 @@ function ExportButton() {
       el.style.letterSpacing = 'normal';
     });
 
-    // ── Step 3: Wait for the browser to reflow the clone ──────────────────
-    await new Promise(resolve => setTimeout(resolve, 200));
+    // ── Step 3: Wait for fonts to load and the browser to reflow ─────────────
+    await document.fonts.ready;
+    await new Promise(resolve => setTimeout(resolve, 250));
 
     try {
       const canvas = await html2canvas(clone, {

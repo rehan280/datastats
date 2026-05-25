@@ -1,4 +1,38 @@
+/* ─── Custom Fonts ────────────────────────────────────────────────────────── */
+@font-face {
+  font-family: 'The Rehan Kadri Display';
+  src: url('./fonts/therehankadri_display.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'The Rehan Kadri';
+  src: url('./fonts/therehankadri_regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'The Rehan Kadri';
+  src: url('./fonts/therehankadri_bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'The Rehan Kadri Condensed';
+  src: url('./fonts/therehankadri_condensedbold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
+
   font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -287,6 +321,8 @@ input:checked+.slider:before {
   flex: 1;
   position: relative;
   width: 100%;
+  /* overflow hidden here so chart content stays bounded but
+     labels above bars are rendered within the recharts margin area */
 }
 
 .canvas-footer {

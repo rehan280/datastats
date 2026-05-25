@@ -12,6 +12,28 @@ import { Users } from 'lucide-react';
 function Canvas() {
   const { chartData, settings } = useContext(AppContext);
 
+  const parseColoredText = (text) => {
+    if (typeof text !== 'string' || !text.includes('{{')) return text;
+    const parts = text.split(/(\{\{[^|]+\|[^}]+\}\})/g);
+    return parts.map((part, i) => {
+      if (part.startsWith('{{') && part.endsWith('}}')) {
+        const inner = part.slice(2, -2);
+        const sepIndex = inner.indexOf('|');
+        if (sepIndex > -1) {
+          const color = inner.substring(0, sepIndex);
+          const content = inner.substring(sepIndex + 1);
+          return <span key={i} style={{ color }}>{content}</span>;
+        }
+      }
+      return <React.Fragment key={i}>{part}</React.Fragment>;
+    });
+  };
+
+  const stripColoredText = (text) => {
+    if (typeof text !== 'string' || !text.includes('{{')) return text;
+    return text.replace(/\{\{[^|]+\|([^}]+)\}\}/g, '$1');
+  };
+
   // Formatting utilities
   const formatYAxis = (tickItem) => {
     if (tickItem >= 1000000) return (tickItem / 1000000).toFixed(1) + 'M';
@@ -20,20 +42,20 @@ function Canvas() {
   };
 
   const formatDataLabel = (value) => {
-    return `${value}${settings.valueSuffix || ''}`;
+    return `${value}${stripColoredText(settings.valueSuffix || '')}`;
   };
 
   const processedData = chartData
     .map(item => ({
       ...item,
       value: parseFloat(item.value) || 0,
-      value2: parseFloat(item.value2) || 0
+      rawValue: item.value,
+      value2: parseFloat(item.value2) || 0,
+      rawValue2: item.value2
     }))
     .filter(item => {
-      // Filter out rows with empty/default labels or where both values are 0
-      const hasLabel = item.label && item.label.trim() !== '' && item.label.trim().toLowerCase() !== 'new label';
-      const hasValue = item.value !== 0 || item.value2 !== 0;
-      return hasLabel && hasValue;
+      // Allow all items so data is not hidden unexpectedly when values are 0 or labels are left as default.
+      return true;
     });
 
   const getCellOpacity = (index) => {
@@ -51,7 +73,7 @@ function Canvas() {
           <BarChart
             layout={isHorizontal ? 'vertical' : 'horizontal'}
             data={processedData}
-            margin={{ top: 30, right: 30, left: 20, bottom: 20 }}
+            margin={{ top: 50, right: 40, left: 20, bottom: 20 }}
           >
             <CartesianGrid strokeDasharray="3 3" vertical={!isHorizontal} horizontal={isHorizontal} stroke={settings.showGridLines ? "#eaeaea" : "transparent"} />
 
@@ -181,7 +203,7 @@ function Canvas() {
                 paddingAngle={isDoughnut ? 2 : 0}
                 dataKey="value"
                 nameKey="label"
-                label={settings.showDataLabels ? ({ name, value }) => `${name} (${value}${settings.valueSuffix || ''})` : false}
+                label={settings.showDataLabels ? ({ name, value }) => `${name} (${value}${stripColoredText(settings.valueSuffix || '')})` : false}
               >
                 {processedData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={index === 0 ? settings.primaryColor : '#E5E5E5'} fillOpacity={1} />
@@ -200,7 +222,7 @@ function Canvas() {
             <PolarGrid />
             <PolarAngleAxis dataKey="label" tick={{ fill: settings.textColor, fontSize: 12 }} />
             <PolarRadiusAxis angle={30} domain={['auto', 'auto']} tick={false} />
-            <Radar name={settings.title || "Subject"} dataKey="value" stroke={settings.primaryColor} fill={settings.primaryColor} fillOpacity={0.6} />
+            <Radar name={stripColoredText(settings.title || "Subject")} dataKey="value" stroke={settings.primaryColor} fill={settings.primaryColor} fillOpacity={0.6} />
             <Tooltip />
             {settings.showLegend && <Legend />}
           </RadarChart>
@@ -232,7 +254,7 @@ function Canvas() {
             <ZAxis type="number" range={[100, 100]} />
             <Tooltip cursor={{ strokeDasharray: '3 3' }} contentStyle={{ borderRadius: '8px', border: '1px solid #ccc' }} />
             {settings.showLegend && <Legend />}
-            <Scatter name={settings.title || "Data"} data={processedData} fill={settings.primaryColor}>
+            <Scatter name={stripColoredText(settings.title || "Data")} data={processedData} fill={settings.primaryColor}>
               {settings.showDataLabels && <LabelList dataKey="value" position="top" fill={settings.textColor} fontSize={12} offset={10} formatter={formatDataLabel} />}
             </Scatter>
           </ScatterChart>
@@ -305,20 +327,112 @@ function Canvas() {
           </FunnelChart>
         </ResponsiveContainer>
       );
+    } else if (settings.chartType === 'Banner') {
+      const topValue = processedData.length > 0 ? processedData[0] : { label: 'Description of the data goes here.', value: 74 };
+      
+      return (
+        <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ width: '90%', maxWidth: '700px', display: 'flex', flexDirection: 'column', filter: 'drop-shadow(0 10px 15px rgba(0,0,0,0.1))', position: 'relative' }}>
+            
+            {/* Top Bar */}
+            <div style={{ background: settings.primaryColor, color: '#fff', padding: '16px 24px', borderRadius: '8px 8px 0 0', display: 'flex', alignItems: 'center', gap: '16px', position: 'relative', zIndex: 2, width: '100%' }}>
+              <div style={{ width: '48px', height: '48px', background: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
+                {settings.bannerLogoUrl ? (
+                  <img src={settings.bannerLogoUrl} alt="Banner Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M27.3 3.1C27 1.9 26 0.9 24.8 0.6C22.6 0 14 0 14 0C14 0 5.4 0 3.2 0.6C2 0.9 1 1.9 0.7 3.1C0 5.3 0 10 0 10C0 10 0 14.7 0.7 16.9C1 18.1 2 19.1 3.2 19.4C5.4 20 14 20 14 20C14 20 22.6 20 24.8 19.4C26 19.1 27 18.1 27.3 16.9C28 14.7 28 10 28 10C28 10 28 5.3 27.3 3.1ZM11.2 14.3V5.7L18.7 10L11.2 14.3Z" fill={settings.primaryColor}/>
+                  </svg>
+                )}
+              </div>
+              <h2 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 500, letterSpacing: '-0.02em', fontFamily: 'Inter, sans-serif' }}>{parseColoredText(settings.title || 'Add Title Here')}</h2>
+            </div>
+            
+            {/* Main Content Area */}
+            <div style={{ background: '#fff', border: '1px solid #E5E7EB', borderTop: 'none', borderRadius: '0 0 8px 8px', padding: '40px', display: 'flex', gap: '40px', alignItems: 'center', position: 'relative', zIndex: 2 }}>
+              
+              {/* Illustration */}
+              {settings.bannerImageUrl ? (
+                <div style={{ width: '220px', height: '180px', flexShrink: 0, border: '2px solid #1E1B4B', borderRadius: '4px', overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <img src={settings.bannerImageUrl} alt="Banner Graphic" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                </div>
+              ) : (
+                <div style={{ width: '220px', flexShrink: 0, border: '2px solid #1E1B4B', borderRadius: '4px', overflow: 'hidden', background: '#fff' }}>
+                  <div style={{ background: '#1E1B4B', padding: '8px', display: 'flex', gap: '4px' }}>
+                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#fff' }}></div>
+                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#fff' }}></div>
+                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#fff' }}></div>
+                  </div>
+                  <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={{ display: 'flex', gap: '12px' }}>
+                      <div style={{ flex: 1, height: '80px', background: '#E11D48', borderRadius: '2px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M8 5V19L19 12L8 5Z" fill="#fff"/>
+                        </svg>
+                      </div>
+                      <div style={{ width: '30px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        <div style={{ height: '22px', background: '#E11D48', borderRadius: '2px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5V19L19 12L8 5Z" fill="#fff"/></svg>
+                        </div>
+                        <div style={{ height: '22px', background: '#E11D48', borderRadius: '2px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5V19L19 12L8 5Z" fill="#fff"/></svg>
+                        </div>
+                        <div style={{ height: '22px', background: '#E11D48', borderRadius: '2px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5V19L19 12L8 5Z" fill="#fff"/></svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '12px' }}>
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '4px' }}>
+                        <div style={{ height: '6px', background: '#1E1B4B', borderRadius: '3px', width: '30%' }}></div>
+                        <div style={{ height: '6px', background: '#1E1B4B', borderRadius: '3px', width: '70%' }}></div>
+                        <div style={{ height: '6px', background: '#1E1B4B', borderRadius: '3px', width: '50%' }}></div>
+                        <div style={{ height: '6px', background: '#1E1B4B', borderRadius: '3px', width: '90%' }}></div>
+                      </div>
+                      <div style={{ width: '30px', display: 'flex', justifyContent: 'center', gap: '4px', paddingTop: '4px' }}>
+                         <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#E11D48' }}></div>
+                         <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#E11D48' }}></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Text Right Side */}
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={{ fontSize: '3rem', fontWeight: 900, color: settings.primaryColor, lineHeight: 1.1, fontFamily: 'Inter, sans-serif' }}>
+                  {settings.subtitle && <span style={{ color: settings.secondaryColor, fontSize: '2.5rem' }}>{parseColoredText(settings.subtitle)} </span>}
+                  {topValue.rawValue !== undefined ? topValue.rawValue : topValue.value}
+                  {settings.valueSuffix && <span style={{ color: settings.textColor }}>{parseColoredText(settings.valueSuffix)}</span>}
+                </div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#111827', lineHeight: 1.4, fontFamily: 'Inter, sans-serif' }}>
+                  {topValue.label}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
     } else if (settings.chartType === 'StatCard') {
       const topValue = processedData.length > 0 ? processedData[0] : { label: 'Empty', value: 0 };
       return (
         <div className="stat-card-view">
-          <div className="stat-circle" style={{ background: settings.primaryColor }}>
-            <Users size={72} strokeWidth={1.5} />
+          <div className="stat-circle" style={{ background: settings.primaryColor, flexShrink: 0, overflow: 'hidden' }}>
+            {settings.statCardIconUrl ? (
+              <img src={settings.statCardIconUrl} alt="Stat Icon" style={{ width: '100%', height: '100%', objectFit: 'contain', transform: `scale(${(settings.statCardIconZoom || 100) / 100})` }} />
+            ) : (
+              <Users size={72} strokeWidth={1.5} />
+            )}
           </div>
           <div className="stat-text">
             <h2 style={{ color: settings.secondaryColor }}>
               <span style={{ fontSize: '1.2rem', fontWeight: 500, color: settings.textColor, opacity: 0.8, display: 'block', marginBottom: '8px' }}>
                 {topValue.label}
               </span>
-              <span style={{ color: settings.primaryColor, display: 'inline' }}>{topValue.value}</span>
-              {settings.valueSuffix}
+              <span style={{ color: settings.primaryColor, display: 'inline' }}>
+                {topValue.rawValue !== undefined ? topValue.rawValue : topValue.value}
+              </span>
+              <span style={{ color: settings.textColor }}>{parseColoredText(settings.valueSuffix)}</span>
             </h2>
           </div>
         </div>
@@ -337,15 +451,15 @@ function Canvas() {
     return (
       <div id="canvas-export-area" className="canvas" style={{ background: settings.canvasBgColor, fontFamily: settings.fontFamily || 'Inter', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
         <div style={{ background: `linear-gradient(135deg, ${settings.primaryColor}, ${settings.secondaryColor})`, padding: '20px 32px 18px', flexShrink: 0 }}>
-          {settings.title && <h2 style={{ color: '#FFFFFF', fontSize: '1.35rem', fontWeight: 800, margin: 0, lineHeight: 1.25 }}>{settings.title}</h2>}
-          {settings.subtitle && <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '0.85rem', margin: '5px 0 0' }}>{settings.subtitle}</p>}
+          {settings.title && <h2 style={{ color: '#FFFFFF', fontSize: '1.35rem', fontWeight: 800, margin: 0, lineHeight: 1.25 }}>{parseColoredText(settings.title)}</h2>}
+          {settings.subtitle && <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '0.85rem', margin: '5px 0 0' }}>{parseColoredText(settings.subtitle)}</p>}
         </div>
         <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
           <div className="canvas-chart" style={{ position: 'absolute', inset: 0 }}>{renderChart()}</div>
           {settings.watermarkText && <div className="watermark">{settings.watermarkText}</div>}
         </div>
         <div style={{ padding: '8px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: `2px solid ${settings.primaryColor}25`, background: `${settings.primaryColor}0C`, flexShrink: 0 }}>
-          <span style={{ color: settings.textColor, fontSize: '0.8rem', opacity: 0.6 }}>{settings.footerText}</span>
+          <span style={{ color: settings.textColor, fontSize: '0.8rem', opacity: 0.6 }}>{parseColoredText(settings.footerText)}</span>
           <span style={{ color: settings.primaryColor, fontSize: '0.95rem', fontWeight: 800 }}>{settings.brandLogoText}<span style={{ color: settings.secondaryColor }}>{settings.brandLogoHighlight}</span></span>
         </div>
       </div>
@@ -458,14 +572,14 @@ function Canvas() {
       case 'Backlinko Minimal':
         return (
           <div style={{ textAlign: 'center', padding: '4px 40px 18px', fontSize: '0.77rem', color: settings.textColor, opacity: 0.42, fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase' }}>
-            {settings.footerText}
+            {parseColoredText(settings.footerText)}
           </div>
         );
 
       case 'Neon Cyber':
         return (
           <div style={{ padding: '8px 24px', borderTop: `1px solid ${settings.primaryColor}30`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ color: settings.primaryColor, fontSize: '0.72rem', fontFamily: 'Courier New,monospace', opacity: 0.7 }}>&gt;_ {settings.footerText}</span>
+            <span style={{ color: settings.primaryColor, fontSize: '0.72rem', fontFamily: 'Courier New,monospace', opacity: 0.7 }}>&gt;_ {parseColoredText(settings.footerText)}</span>
             <span style={{ color: settings.primaryColor, fontSize: '0.82rem', fontFamily: 'Courier New,monospace', fontWeight: 700, textShadow: `0 0 10px ${settings.primaryColor}` }}>
               {settings.brandLogoText}<span style={{ color: settings.secondaryColor }}>{settings.brandLogoHighlight}</span>
             </span>
@@ -475,7 +589,7 @@ function Canvas() {
       case 'Bloomberg Terminal':
         return (
           <div style={{ padding: '7px 28px', borderTop: `1px solid ${settings.primaryColor}45`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0,0,0,0.5)' }}>
-            <span style={{ color: settings.primaryColor, fontSize: '0.67rem', fontFamily: 'Courier New,monospace', letterSpacing: '0.08em', textTransform: 'uppercase' }}>SRC: {settings.footerText}</span>
+            <span style={{ color: settings.primaryColor, fontSize: '0.67rem', fontFamily: 'Courier New,monospace', letterSpacing: '0.08em', textTransform: 'uppercase' }}>SRC: {parseColoredText(settings.footerText)}</span>
             {brandMonospace}
           </div>
         );
@@ -483,7 +597,7 @@ function Canvas() {
       case 'Magazine Editorial':
         return (
           <div style={{ padding: '9px 34px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #dadad0' }}>
-            <span style={{ color: settings.textColor, fontSize: '0.77rem', opacity: 0.5, fontStyle: 'italic' }}>{settings.footerText}</span>
+            <span style={{ color: settings.textColor, fontSize: '0.77rem', opacity: 0.5, fontStyle: 'italic' }}>{parseColoredText(settings.footerText)}</span>
             <span style={{ color: settings.primaryColor, fontSize: '0.8rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{settings.brandLogoText}{settings.brandLogoHighlight}</span>
           </div>
         );
@@ -491,7 +605,7 @@ function Canvas() {
       case 'Corporate Blue':
         return (
           <div style={{ padding: '11px 28px 11px 30px', borderTop: `3px solid ${settings.primaryColor}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: `${settings.primaryColor}09` }}>
-            <span style={{ color: settings.textColor, fontSize: '0.82rem', fontWeight: 500, opacity: 0.62 }}>{settings.footerText}</span>
+            <span style={{ color: settings.textColor, fontSize: '0.82rem', fontWeight: 500, opacity: 0.62 }}>{parseColoredText(settings.footerText)}</span>
             <span style={{ color: settings.primaryColor, fontSize: '0.9rem', fontWeight: 800 }}>{settings.brandLogoText}<span style={{ color: settings.secondaryColor }}>{settings.brandLogoHighlight}</span></span>
           </div>
         );
@@ -499,7 +613,7 @@ function Canvas() {
       case 'Startup Gradient':
         return (
           <div style={{ padding: '9px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(4px)' }}>
-            <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem' }}>{settings.footerText}</span>
+            <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem' }}>{parseColoredText(settings.footerText)}</span>
             <span style={{ color: '#FFFFFF', fontSize: '0.9rem', fontWeight: 700 }}>{settings.brandLogoText}<span style={{ opacity: 0.65 }}>{settings.brandLogoHighlight}</span></span>
           </div>
         );
@@ -507,14 +621,14 @@ function Canvas() {
       case 'Apple Minimal':
         return (
           <div style={{ padding: '7px 32px 14px', textAlign: 'center', borderTop: '0.5px solid #DADADF' }}>
-            <span style={{ color: settings.textColor, fontSize: '0.72rem', opacity: 0.36, letterSpacing: '0.015em' }}>{settings.footerText} · {settings.brandLogoText}{settings.brandLogoHighlight}</span>
+            <span style={{ color: settings.textColor, fontSize: '0.72rem', opacity: 0.36, letterSpacing: '0.015em' }}>{parseColoredText(settings.footerText)} · {settings.brandLogoText}{settings.brandLogoHighlight}</span>
           </div>
         );
 
       case 'Warm Earth':
         return (
           <div style={{ padding: '11px 32px', background: settings.primaryColor, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ color: '#FDF6EC', fontSize: '0.84rem' }}>{settings.footerText}</span>
+            <span style={{ color: '#FDF6EC', fontSize: '0.84rem' }}>{parseColoredText(settings.footerText)}</span>
             <span style={{ color: '#FDF6EC', fontSize: '0.9rem', fontWeight: 700 }}>{settings.brandLogoText}<span style={{ opacity: 0.6 }}>{settings.brandLogoHighlight}</span></span>
           </div>
         );
@@ -522,7 +636,7 @@ function Canvas() {
       case 'Modern Dark':
         return (
           <div style={{ padding: '10px 32px', background: `${settings.secondaryColor}DD`, borderTop: `1px solid ${settings.primaryColor}35`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ color: settings.textColor, fontSize: '0.82rem', opacity: 0.42 }}>{settings.footerText}</span>
+            <span style={{ color: settings.textColor, fontSize: '0.82rem', opacity: 0.42 }}>{parseColoredText(settings.footerText)}</span>
             <span style={{ color: settings.primaryColor, fontSize: '0.9rem', fontWeight: 700 }}>{settings.brandLogoText}<span style={{ color: '#fff', opacity: 0.75 }}>{settings.brandLogoHighlight}</span></span>
           </div>
         );
@@ -530,7 +644,7 @@ function Canvas() {
       case 'Research Report':
         return (
           <div style={{ padding: '8px 34px 8px 28px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #d0d0d8', background: '#EAEAEF' }}>
-            <span style={{ color: settings.textColor, fontSize: '0.72rem', opacity: 0.52, fontStyle: 'italic' }}>Source: {settings.footerText}</span>
+            <span style={{ color: settings.textColor, fontSize: '0.72rem', opacity: 0.52, fontStyle: 'italic' }}>Source: {parseColoredText(settings.footerText)}</span>
             <span style={{ color: settings.primaryColor, fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em' }}>{settings.brandLogoText}{settings.brandLogoHighlight}</span>
           </div>
         );
@@ -538,7 +652,7 @@ function Canvas() {
       default:
         return (
           <div className="canvas-footer" style={{ background: settings.secondaryColor }}>
-            <div style={{ color: 'white', fontWeight: 300, fontSize: '0.9rem' }}>{settings.footerText}</div>
+            <div style={{ color: 'white', fontWeight: 300, fontSize: '0.9rem' }}>{parseColoredText(settings.footerText)}</div>
             <div className="brand-logo" style={{ color: 'white', fontWeight: 600, letterSpacing: '-0.5px', fontSize: '1.2rem' }}>
               {settings.brandLogoText}
               <span style={{ color: settings.primaryColor }}>{settings.brandLogoHighlight}</span>
@@ -557,11 +671,11 @@ function Canvas() {
       {renderTopDecoration()}
 
       <div className="canvas-body" style={{ color: settings.textColor, padding: getBodyPadding() }}>
-        {settings.title && <h2 style={getTitleStyle()}>{settings.title}</h2>}
+        {settings.title && settings.chartType !== 'Banner' && <h2 style={getTitleStyle()}>{parseColoredText(settings.title)}</h2>}
 
-        {settings.subtitle && (
+        {settings.subtitle && settings.chartType !== 'Banner' && (
           <p style={{ margin: 0, marginBottom: '10px', textAlign: leftAlignedThemes.includes(t) ? 'left' : 'center', paddingLeft: subtitlePL, color: settings.textColor, opacity: 0.68, fontSize: '0.88rem' }}>
-            {settings.subtitle}
+            {parseColoredText(settings.subtitle)}
           </p>
         )}
 
